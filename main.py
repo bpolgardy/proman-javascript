@@ -27,7 +27,8 @@ def get_boards():
     """
     All the boards
     """
-    return data_handler.get_boards()
+    api_key = request.args.get("api_key")
+    return data_handler.get_boards(api_key)
 
 
 @app.route("/get-cards/<int:board_id>")

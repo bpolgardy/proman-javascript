@@ -14,12 +14,20 @@ def get_card_status(status_id):
     return next((status['title'] for status in statuses if status['id'] == str(status_id)), 'Unknown')
 
 
-def get_boards():
+def get_boards(api_key):
     """
     Gather all boards
     :return:
     """
-    return execute_query("SELECT * FROM boards")
+    boards_query = "SELECT * FROM boards"
+    if api_key:
+        boards_query += """
+            WHERE 
+            (SELECT users.api_key FROM users WHERE users.id = boards.user_id)
+            ='""" + util.escape_single_quotes(api_key) + "'"
+    print(boards_query)
+    return execute_query(boards_query)
+
 
 def get_cards_for_board(board_id):
     persistence.clear_cache()

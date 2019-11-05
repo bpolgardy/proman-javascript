@@ -26,3 +26,15 @@ def get_hashed_password(plain_text_password):
 
 def is_password_valid(plain_text_password, hashed_password):
     return verify_password(plain_text_password, hashed_password)
+
+
+def escape_single_quotes(data):
+    if type == data:
+        for key, value in data.items():
+            if type(value) == str and "'" in value:
+                data[key] = value.replace("'", "''")
+    elif type == str:
+        data = data.replace("'", "''")
+
+    return data
+
