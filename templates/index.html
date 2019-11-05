@@ -16,28 +16,40 @@
         <script type="module" src="{{ url_for('static', filename='js/main.js') }}" defer></script>
     </head>
     <body>
-        <h1>ProMan</h1>
-        <div id="boards">Boards are loading...</div>
-        {% include 'authentication.html' %}
-        <div id="content">{% block content %}{% endblock %}</div>
+        <div class="mb-4"></div>
         <!-- navbar -->
         {% include 'navbar.html' %}
         <!-- /navbar -->
         <div class="container pt-5">
-            <div class="row my-3">
-                <h3 class="col">ProMan</h3>
-                <button type="button" class="btn btn-info btn-sm mr-3">+ New Board</button>
+            <div class="row mt-4 mb-4">
+                <span class="col"></span>
+                <button type="button" class="btn btn-info btn-sm mr-3 shadow-sm"><i class="fa fa-plus-circle"></i> New Board</button>
             </div>
-            <div class="card">
+            <div class="shadow-sm card mb-4">
                 <div class="card-header">
                     <div class="row">
                         <h5 class="col pt-1">Board title</h5>
-                        <a class="btn" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                        <a class="btn" data-toggle="collapse" href="#board-1" role="button" aria-expanded="false" aria-controls="collapseExample">
                                 <i class="fa fa-chevron-down"></i>
                         </a>
                     </div>
                 </div>
-                <div class="collapse" id="collapseExample">
+                <div class="collapse" id="board-1">
+                    <div class="card-body">
+                        This is where the cards go.
+                    </div>
+                </div>
+            </div>
+            <div class="shadow-sm card mb-4">
+                <div class="card-header">
+                    <div class="row">
+                        <h5 class="col pt-1">Board title</h5>
+                        <a class="btn" data-toggle="collapse" href="#board-2" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                <i class="fa fa-chevron-down"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="collapse" id="board-2">
                     <div class="card-body">
                         This is where the cards go.
                     </div>
