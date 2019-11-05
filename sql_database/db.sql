@@ -45,7 +45,7 @@ CREATE SEQUENCE public.boards_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.boards_id_seq OWNER TO postgres;
+ALTER TABLE public.boards_id_seq OWNER TO csosz;
 
 --
 -- Name: boards_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -67,7 +67,7 @@ CREATE TABLE public.cards (
 );
 
 
-ALTER TABLE public.cards OWNER TO postgres;
+ALTER TABLE public.cards OWNER TO csosz;
 
 --
 -- Name: cards_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -82,7 +82,7 @@ CREATE SEQUENCE public.cards_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.cards_id_seq OWNER TO postgres;
+ALTER TABLE public.cards_id_seq OWNER TO csosz;
 
 --
 -- Name: cards_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -101,7 +101,7 @@ CREATE TABLE public.statuses (
 );
 
 
-ALTER TABLE public.statuses OWNER TO postgres;
+ALTER TABLE public.statuses OWNER TO csosz;
 
 --
 -- Name: statuses_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -116,7 +116,7 @@ CREATE SEQUENCE public.statuses_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.statuses_id_seq OWNER TO postgres;
+ALTER TABLE public.statuses_id_seq OWNER TO csosz;
 
 --
 -- Name: statuses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres

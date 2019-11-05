@@ -17,5 +17,7 @@
     <body>
         <h1>ProMan</h1>
         <div id="boards">Boards are loading...</div>
+        {% include 'authentication.html' %}
+        <div id="content">{% block content %}{% endblock %}</div>
     </body>
 </html>
