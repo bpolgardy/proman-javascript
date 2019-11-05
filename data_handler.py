@@ -1,5 +1,7 @@
 import persistence
 import connection
+from queries import select, insert
+import util
 
 
 def get_card_status(status_id):
@@ -29,6 +31,46 @@ def get_cards_for_board(board_id):
             card['status_id'] = get_card_status(card['status_id'])  # Set textual status for the card
             matching_cards.append(card)
     return matching_cards
+
+
+def get_user_id_for(username):
+    user_id = select.get_user_id_by_username(username)
+    return user_id
+
+
+def get_hashed_password_for(username):
+    hashed_password = select.hashed_password_for(username)
+    if hashed_password:
+        return hashed_password
+
+
+def is_username_unique(username):
+    user_id = select.get_user_id_by_username(username)
+    if not user_id:
+        return True
+
+
+def insert_user(user_data_orig):
+    user_data = dict(user_data_orig)
+    user_data['api_key'] = util.get_hashed_api_key(user_data['username'] + user_data['password'])
+    user_data['password'] = util.get_hashed_password(user_data['password'])
+    insert.new_user(user_data)
+
+
+def validate_user_credentials(username, password):
+    hashed_password = get_hashed_password_for(username)
+    if hashed_password:
+        password_valid = util.is_password_valid(password, hashed_password)
+        if password_valid:
+            return True
+    return False
+
+
+def record_user(user_data):
+    username_is_unique = is_username_unique(user_data['username'])
+    if username_is_unique:
+        insert_user(user_data)
+        return True
 
 
 @connection.connection_handler

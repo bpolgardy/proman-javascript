@@ -16,6 +16,10 @@
         <script type="module" src="{{ url_for('static', filename='js/main.js') }}" defer></script>
     </head>
     <body>
+        <h1>ProMan</h1>
+        <div id="boards">Boards are loading...</div>
+        {% include 'authentication.html' %}
+        <div id="content">{% block content %}{% endblock %}</div>
         <!-- navbar -->
         {% include 'navbar.html' %}
         <!-- /navbar -->
