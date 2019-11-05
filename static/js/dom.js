@@ -7,7 +7,7 @@ export let dom = {
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
-        dataHandler.getBoards(function(boards){
+        dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
         });
     },
@@ -17,7 +17,7 @@ export let dom = {
 
         let boardList = '';
 
-        for(let board of boards){
+        for (let board of boards) {
             boardList += `
                 <li>${board.title}</li>
             `;
@@ -32,6 +32,17 @@ export let dom = {
         let boardsContainer = document.querySelector('#boards');
         boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
     },
+    createNewBoard: function(event) {
+        let newBoard = '<input type="text" name="cardTitle" value="New board" autofocus />';
+
+        document.querySelector('#boards').insertAdjacentHTML('beforeend', newBoard)
+    },
+    addClickListener: function(selector, handler) {
+        document.querySelector(selector).addEventListener('click', function (event) {
+            handler(event);
+        })
+    },
+
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
     },
