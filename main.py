@@ -31,6 +31,16 @@ def get_boards():
     return data_handler.get_boards(api_key)
 
 
+@app.route("/get-boards/<id>")
+@json_response
+def get_board(id):
+    """
+    Single board by id
+    """
+    api_key = request.args.get("api_key")
+    return data_handler.get_boards(api_key, id)
+
+
 @app.route("/get-cards/<int:board_id>")
 @json_response
 def get_cards_for_board(board_id: int):
@@ -71,14 +81,15 @@ def log_in_user(user_credentials):
 
 @app.route('/register', methods=['GET', 'POST'])
 def route_register():
-    if request.method == 'POST':
+    if request.method == "POST":
         user_data = request.form.to_dict()
+        print(user_data)
         if record_user(user_data):
+            print("record user")
             log_in_user(user_data)
             flash("Login successful")
-        return redirect('/')
-
-    return render_template('user_authentication/register.html')
+    else:
+        return render_template('index.html')
 
 
 def main():
