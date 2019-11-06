@@ -25,7 +25,6 @@ def get_boards(api_key):
             WHERE 
             (SELECT users.api_key FROM users WHERE users.id = boards.user_id)
             ='""" + util.escape_single_quotes(api_key) + "'"
-    print(boards_query)
     return execute_query(boards_query)
 
 

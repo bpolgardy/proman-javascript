@@ -29,12 +29,11 @@ def is_password_valid(plain_text_password, hashed_password):
 
 
 def escape_single_quotes(data):
-    if type == data:
+    if type(data) == dict:
         for key, value in data.items():
             if type(value) == str and "'" in value:
                 data[key] = value.replace("'", "''")
-    elif type == str:
-        data = data.replace("'", "''")
-
+    elif type(data) == str:
+        data = data.replace("\'", "''")
     return data
 
