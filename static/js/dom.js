@@ -1,5 +1,5 @@
 // It uses data_handler.js to visualize elements
-import { dataHandler } from "./data_handler.js";
+import {dataHandler} from "./data_handler.js";
 
 export let dom = {
     init: function () {
@@ -39,7 +39,7 @@ export let dom = {
                     <div class="row">
                         <h5 class="col pt-1">
                             <span>
-                                <input id="createNewBoardInput" class="input" type="text" name="cardTitle" value="New board"/>
+                                <input id="createNewBoardTitle" class="input" type="text" name="cardTitle" value="New board"/>
                             </span>
                         </h5>
                         <button id="dismissButton" type="button" class="close col-auto text-right pl-3 pr-3 no-border btn" aria-label="Close">
@@ -50,15 +50,17 @@ export let dom = {
 
         document.querySelector('#boardsContainer').insertAdjacentHTML('beforeend', newBoard);
 
-        let creatNewBoardInput = document.querySelector('#createNewBoardInput');
+        let creatNewBoardInput = document.querySelector('#createNewBoardTitle');
         creatNewBoardInput.focus();
         creatNewBoardInput.addEventListener('keydown', function(event) {
             let key = event.key;
-            if (key === 'esc') {
+            if (key === 'Escape') {
                 // back to original title and dont save
+                 dom.saveNewBoardTitle(event)
             }
-            else if (key === 'enter') {
+            else if (key === 'Enter') {
                 // rename and save
+                dom.saveNewBoardTitle(event)
             }
         });
 
@@ -74,8 +76,30 @@ export let dom = {
         document.getElementById('newBoard').remove();
         dom.addClickListener('#createNewBoard', dom.createNewBoard)
     },
-    saveNewBoardTitle: function() {
+    saveNewBoardTitle: function(event) {
+        let title = event.target.value;
+        let boardId = 3; // get it from the server
 
+        let savedBoard =
+            `<div class="shadow-sm card mb-4">
+                <div class="card-header">
+                    <div class="row">
+                        <h5 class="col pt-1">${title}</h5>
+                        <a class="btn" data-toggle="collapse" href="#board-${boardId}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                <i class="fa fa-chevron-down"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="collapse" id="board-${boardId}">
+                    <div class="card-body">
+                        This is where the cards go.
+                    </div>
+                </div>
+            </div>`;
+
+        document.getElementById('newBoard').remove();
+        document.querySelector('#boardsContainer').insertAdjacentHTML('beforeend', savedBoard);
+        dom.addClickListener('#createNewBoard', dom.createNewBoard)
     },
 
     loadCards: function (boardId) {
