@@ -5,7 +5,7 @@ import {utils} from "./utils.js";
 ;
 // This function is to initialize the application
 function init() {
-    sessionStorage.setItem("api_key", utils.getApiKey());
+    utils.getApiKey();
     // init data
     dom.init();
     // loads the boards to the screen

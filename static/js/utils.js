@@ -8,7 +8,7 @@ export let utils = {
                 xhr.onreadystatechange = function() {
             if (xhr.readyState == XMLHttpRequest.DONE) {
                 console.log(xhr.response);
-                return xhr.response
+                sessionStorage.setItem("apiKey", xhr.response.toString());
             }
         };
         xhr.open('GET', '/api_key', true);

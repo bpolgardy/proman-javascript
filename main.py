@@ -90,7 +90,8 @@ def route_register():
 @app.route("/api_key")
 def send_api_key():
     if session:
-        return session[""]
+        print(str(session["api_key"]))
+        return str(session["api_key"])
     return "Authentication required"
 
 
