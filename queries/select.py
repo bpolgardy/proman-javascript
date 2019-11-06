@@ -3,6 +3,18 @@ from psycopg2 import sql
 
 
 @connection.connection_handler
+def get_api_key_for_user(cursor, username):
+    cursor.execute("""
+                    SELECT api_key
+                    FROM users
+                    WHERE username = %(username)s
+                    """,
+                   {'username': username})
+    user_api_key = cursor.fetchone()
+    return user_api_key
+
+
+@connection.connection_handler
 def get_user_id_by_username(cursor, username):
     cursor.execute("""
                     SELECT id

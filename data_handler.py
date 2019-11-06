@@ -4,6 +4,11 @@ from queries import select, insert
 import util
 
 
+def get_api_key(username):
+    logged_in_user_api_key = select.get_api_key_for_user(username)
+    return logged_in_user_api_key
+
+
 def get_card_status(status_id):
     """
     Find the first status matching the given id
