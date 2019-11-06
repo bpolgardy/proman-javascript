@@ -96,6 +96,14 @@ def route_register():
     return render_template('index.html')
 
 
+@app.route("/api_key")
+def send_api_key():
+    if session:
+        print(str(session["api_key"]))
+        return str(session["api_key"])
+    return "Authentication required"
+
+
 @app.route('/logout')
 def route_logout():
     session.pop('username', None)
