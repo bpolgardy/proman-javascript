@@ -19,7 +19,7 @@ def get_user_id_by_username(cursor, username):
     cursor.execute("""
                     SELECT id
                     FROM users
-                    WHERE username = %(username)s
+                    WHERE name = %(username)s
                    """,
                    {'username': username})
     user_data = cursor.fetchone()
@@ -41,7 +41,7 @@ def hashed_password_for(cursor, username):
     cursor.execute("""
                     SELECT password
                     FROM users
-                    WHERE username = %(username)s
+                    WHERE name = %(username)s
                    """,
                    {'username': username})
     user_data = cursor.fetchone()

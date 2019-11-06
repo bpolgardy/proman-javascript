@@ -33,6 +33,16 @@ def get_boards():
     return data_handler.get_boards(api_key)
 
 
+@app.route("/get-boards/<id>")
+@json_response
+def get_board(id):
+    """
+    Single board by id
+    """
+    api_key = request.args.get("api_key")
+    return data_handler.get_boards(api_key, id)
+
+
 @app.route("/get-cards/<int:board_id>")
 @json_response
 def get_cards_for_board(board_id: int):
