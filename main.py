@@ -71,15 +71,15 @@ def log_in_user(user_credentials):
 
 @app.route('/register', methods=['GET', 'POST'])
 def route_register():
-    user_data = request.form.to_dict()
-    print(user_data)
-    if record_user(user_data):
-        print("record user")
-        log_in_user(user_data)
-        flash("Login successful")
-        return redirect('/')
-
-    return render_template('index.html')
+    if request.method == "POST":
+        user_data = request.form.to_dict()
+        print(user_data)
+        if record_user(user_data):
+            print("record user")
+            log_in_user(user_data)
+            flash("Login successful")
+    else:
+        return render_template('index.html')
 
 
 def main():
