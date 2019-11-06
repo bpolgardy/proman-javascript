@@ -7,7 +7,7 @@ function init() {
     // loads the boards to the screen
     dom.loadBoards();
     // put handler on new board button
-    dom.addClickListener('#create-board', dom.createNewBoard)
+    dom.addClickListener('#createNewBoard', dom.createNewBoard)
 }
 
 init();

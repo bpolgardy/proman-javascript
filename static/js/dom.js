@@ -33,11 +33,26 @@ export let dom = {
         boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
     },
     createNewBoard: function(event) {
-        let newBoard = '<input id="createNewBoard" type="text" name="cardTitle" value="New board" autofocus />';
+        let newBoard =
+            `<div id="newBoard" class="shadow-sm card mb-4">
+                <div class="card-header">
+                    <div class="row">
+                        <h5 class="col pt-1">
+                            <span>
+                                <input id="createNewBoardInput" class="input" type="text" name="cardTitle" value="New board"/>
+                            </span>
+                        </h5>
+                        <button id="dismissButton" type="button" class="close col-auto text-right pl-3 pr-3 no-border btn" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>`;
 
-        document.querySelector('#boards').insertAdjacentHTML('beforeend', newBoard);
+        document.querySelector('#boardsContainer').insertAdjacentHTML('beforeend', newBoard);
 
-        document.querySelector('#createNewBoard').addEventListener('keydown', function(event) {
+        let creatNewBoardInput = document.querySelector('#createNewBoardInput');
+        creatNewBoardInput.focus();
+        creatNewBoardInput.addEventListener('keydown', function(event) {
             let key = event.key;
             if (key === 'esc') {
                 // back to original title and dont save
@@ -45,13 +60,22 @@ export let dom = {
             else if (key === 'enter') {
                 // rename and save
             }
-        })
+        });
+
+        dom.addClickListener('#dismissButton', dom.dismissNewBoard);
     },
     addClickListener: function(selector, handler) {
         document.querySelector(selector).addEventListener('click', function eventHandler (event) {
             handler(event);
             event.target.removeEventListener('click', eventHandler);
         })
+    },
+    dismissNewBoard: function(event) {
+        document.getElementById('newBoard').remove();
+        dom.addClickListener('#createNewBoard', dom.createNewBoard)
+    },
+    saveNewBoardTitle: function() {
+
     },
 
     loadCards: function (boardId) {
