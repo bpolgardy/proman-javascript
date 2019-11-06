@@ -14,17 +14,21 @@ def get_card_status(status_id):
     return next((status['title'] for status in statuses if status['id'] == str(status_id)), 'Unknown')
 
 
-def get_boards(api_key):
+def get_boards(api_key, id=None):
     """
     Gather all boards
     :return:
     """
-    boards_query = "SELECT * FROM boards"
+    boards_query = "SELECT * FROM boards "
     if api_key:
         boards_query += """
             WHERE 
             (SELECT users.api_key FROM users WHERE users.id = boards.user_id)
             ='""" + util.escape_single_quotes(api_key) + "'"
+    if id and api_key:
+        boards_query += "AND boards.id = " + util.escape_single_quotes(id)
+    elif id:
+        boards_query += "WHERE boards.id = " + util.escape_single_quotes(id)
     return execute_query(boards_query)
 
 
