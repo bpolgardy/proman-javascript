@@ -73,11 +73,10 @@ def log_in_user(user_credentials):
 def route_register():
     if request.method == "POST":
         user_data = request.form.to_dict()
-        print(user_data)
         if record_user(user_data):
-            print("record user")
             log_in_user(user_data)
             flash("Login successful")
+            return redirect('/')
     else:
         return render_template('index.html')
 
