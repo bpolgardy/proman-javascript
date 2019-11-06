@@ -16,6 +16,58 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE ONLY public.cards DROP CONSTRAINT cards_user_id_fkey;
+ALTER TABLE ONLY public.cards DROP CONSTRAINT cards_status_id_fkey;
+ALTER TABLE ONLY public.cards DROP CONSTRAINT cards_board_id_fkey;
+ALTER TABLE ONLY public.boards DROP CONSTRAINT boards_user_id_fkey;
+ALTER TABLE ONLY public.users DROP CONSTRAINT users_pkey;
+ALTER TABLE ONLY public.statuses DROP CONSTRAINT statuses_pkey;
+ALTER TABLE ONLY public.cards DROP CONSTRAINT cards_pkey;
+ALTER TABLE ONLY public.boards DROP CONSTRAINT boards_pkey;
+ALTER TABLE public.users ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.statuses ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.cards ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.boards ALTER COLUMN id DROP DEFAULT;
+DROP SEQUENCE public.users_id_seq;
+DROP TABLE public.users;
+DROP SEQUENCE public.statuses_id_seq;
+DROP TABLE public.statuses;
+DROP SEQUENCE public.cards_id_seq;
+DROP TABLE public.cards;
+DROP SEQUENCE public.boards_id_seq;
+DROP TABLE public.boards;
+DROP EXTENSION plpgsql;
+DROP SCHEMA public;
+--
+-- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA public;
+
+
+ALTER SCHEMA public OWNER TO postgres;
+
+--
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA public IS 'standard public schema';
+
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -26,7 +78,8 @@ SET default_with_oids = false;
 
 CREATE TABLE public.boards (
     id integer NOT NULL,
-    title character varying
+    title character varying,
+    user_id integer
 );
 
 
@@ -45,7 +98,7 @@ CREATE SEQUENCE public.boards_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.boards_id_seq OWNER TO csosz;
+ALTER TABLE public.boards_id_seq OWNER TO postgres;
 
 --
 -- Name: boards_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -63,11 +116,12 @@ CREATE TABLE public.cards (
     board_id integer,
     title character varying,
     status_id integer,
-    "order" integer
+    "order" integer,
+    user_id integer
 );
 
 
-ALTER TABLE public.cards OWNER TO csosz;
+ALTER TABLE public.cards OWNER TO postgres;
 
 --
 -- Name: cards_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -82,7 +136,7 @@ CREATE SEQUENCE public.cards_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.cards_id_seq OWNER TO csosz;
+ALTER TABLE public.cards_id_seq OWNER TO postgres;
 
 --
 -- Name: cards_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -101,7 +155,7 @@ CREATE TABLE public.statuses (
 );
 
 
-ALTER TABLE public.statuses OWNER TO csosz;
+ALTER TABLE public.statuses OWNER TO postgres;
 
 --
 -- Name: statuses_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -116,13 +170,49 @@ CREATE SEQUENCE public.statuses_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.statuses_id_seq OWNER TO csosz;
+ALTER TABLE public.statuses_id_seq OWNER TO postgres;
 
 --
 -- Name: statuses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.statuses_id_seq OWNED BY public.statuses.id;
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    id integer NOT NULL,
+    name character varying,
+    password character varying,
+    api_key character varying
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.users_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
@@ -147,42 +237,10 @@ ALTER TABLE ONLY public.statuses ALTER COLUMN id SET DEFAULT nextval('public.sta
 
 
 --
--- Data for Name: boards; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-
-
---
--- Data for Name: cards; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- Data for Name: statuses; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- Name: boards_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.boards_id_seq', 1, false);
-
-
---
--- Name: cards_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.cards_id_seq', 1, false);
-
-
---
--- Name: statuses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.statuses_id_seq', 1, false);
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
 
 --
@@ -210,6 +268,22 @@ ALTER TABLE ONLY public.statuses
 
 
 --
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: boards boards_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.boards
+    ADD CONSTRAINT boards_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: cards cards_board_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -223,6 +297,51 @@ ALTER TABLE ONLY public.cards
 
 ALTER TABLE ONLY public.cards
     ADD CONSTRAINT cards_status_id_fkey FOREIGN KEY (status_id) REFERENCES public.statuses(id);
+
+
+--
+-- Name: cards cards_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cards
+    ADD CONSTRAINT cards_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
+--
+
+GRANT ALL ON SCHEMA public TO PUBLIC;
+GRANT ALL ON SCHEMA public TO csosz WITH GRANT OPTION;
+GRANT ALL ON SCHEMA public TO pg_monitor WITH GRANT OPTION;
+
+
+--
+-- Name: TABLE boards; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.boards TO csosz;
+
+
+--
+-- Name: TABLE cards; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.cards TO csosz;
+
+
+--
+-- Name: TABLE statuses; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.statuses TO csosz;
+
+
+--
+-- Name: TABLE users; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.users TO csosz;
 
 
 --

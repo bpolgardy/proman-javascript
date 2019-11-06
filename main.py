@@ -33,6 +33,16 @@ def get_boards():
     return data_handler.get_boards(api_key)
 
 
+@app.route("/get-boards/<id>")
+@json_response
+def get_board(id):
+    """
+    Single board by id
+    """
+    api_key = request.args.get("api_key")
+    return data_handler.get_boards(api_key, id)
+
+
 @app.route("/get-cards/<int:board_id>")
 @json_response
 def get_cards_for_board(board_id: int):
@@ -69,7 +79,6 @@ def log_in_user(user_credentials):
         session['username'] = user_credentials['username']
         session['user_id'] = data_handler.get_user_id_for(user_credentials['username'])
         session['api_key'] = data_handler.get_api_key(session['username'])
-        print(session['api_key'])
         return True
     else:
         return False
