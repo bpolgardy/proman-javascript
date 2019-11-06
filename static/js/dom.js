@@ -65,30 +65,31 @@ export let dom = {
         dom.addClickListener('#createNewBoard', dom.createNewBoard)
     },
     saveNewBoardTitle: function(event) {
-        let boardData = {};
-        boardData['title'] = event.target.value;
-        boardData['id'] = 3; // get it from the server
-        // send boardData to server is needed
-        let savedBoard =
-            `<div class="shadow-sm card mb-4">
-                <div class="card-header">
-                    <div class="row">
-                        <h5 class="col pt-1">${boardData['title']}</h5>
-                        <a class="btn" data-toggle="collapse" href="#board-${boardData['id']}" role="button" aria-expanded="false" aria-controls="collapseExample">
-                                <i class="fa fa-chevron-down"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="collapse" id="board-${boardData['id']}">
-                    <div class="card-body">
-                        This is where the cards go.
-                    </div>
-                </div>
-            </div>`;
+        let boardTitle = {};
+        boardTitle['title'] = event.target.value;
+        dataHandler.createNewBoard(boardTitle, function(data) {
 
-        document.getElementById('newBoard').remove();
-        document.querySelector('#boardsContainer').insertAdjacentHTML('beforeend', savedBoard);
-        dom.addClickListener('#createNewBoard', dom.createNewBoard)
+            let savedBoard =
+                `<div class="shadow-sm card mb-4">
+                    <div class="card-header">
+                        <div class="row">
+                            <h5 class="col pt-1">${data['title']}</h5>
+                            <a class="btn" data-toggle="collapse" href="#board-${data['id']}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                    <i class="fa fa-chevron-down"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="collapse" id="board-${data['id']}">
+                        <div class="card-body">
+                            This is where the cards go.
+                        </div>
+                    </div>
+                </div>`;
+
+            document.getElementById('newBoard').remove();
+            document.querySelector('#boardsContainer').insertAdjacentHTML('beforeend', savedBoard);
+            dom.addClickListener('#createNewBoard', dom.createNewBoard)
+        });
     },
 
     loadCards: function (boardId) {
