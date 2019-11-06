@@ -112,6 +112,15 @@ def route_logout():
     return redirect(session['url'])
 
 
+@app.route('/create-board', methods=['POST'])
+@json_response
+def create_board():
+    if request.method == 'POST':
+        board_data = request.get_json(force=True)
+        board_data['user_id'] = session['user_id']
+        return data_handler.save_new_board(board_data)[0]
+
+
 def main():
     app.run(debug=True)
 

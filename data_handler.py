@@ -88,9 +88,23 @@ def record_user(user_data):
         return True
 
 
+def save_new_board(board_data):
+    query = """
+            INSERT INTO boards (id, title, user_id)
+            VALUES (DEFAULT, %(title)s, %(user_id)s)
+            RETURNING id, title, user_id;
+            """
+    params = board_data
+
+    return execute_query(query, params=params)
+
+
 @connection.connection_handler
 def execute_query(cursor, query, params=None):
     cursor.execute(query, params)
 
     if query.strip().startswith('SELECT'):
+        return cursor.fetchall()
+
+    elif query.strip().startswith('INSERT') and 'RETURNING' in query:
         return cursor.fetchall()
