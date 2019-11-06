@@ -1,3 +1,16 @@
 #boards {
     background-color: green;
 }
+
+#logout-link, #login-link, #register-link {
+    text-decoration: none;
+    color: rgba(255,255,255,.5);
+}
+
+#logout-link:hover, #login-link:hover, #register-link:hover {
+    color: rgba(255,255,255,.75);
+}
+
+#proman-logo {
+    color: white;
+}

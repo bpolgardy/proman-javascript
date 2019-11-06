@@ -1,0 +1,12 @@
+<div class="header">
+    {% if session.username %}
+    <div id="user-area">
+        Hello.
+        {{ session.username }}</a> | <a href="{{ url_for('route_logout') }}">Log out</a>
+    </div>
+    {% else %}
+    <div id="user-area">
+        <a href="{{ url_for('route_login') }}">Log in</a> | <a href="{{ url_for('route_register') }}">Register</a>
+    </div>
+    {% endif %}
+</--div>

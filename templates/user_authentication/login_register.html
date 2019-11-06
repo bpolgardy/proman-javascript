@@ -1,0 +1,6 @@
+{% extends 'index.html' %}
+{% block content %}
+    <div id="user-area">
+        <a href="{{ url_for('route_login') }}">Log in</a> | <a href="{{ url_for('route_register') }}">Register</a>
+    </div>
+{% endblock %}

@@ -11,12 +11,53 @@
         <link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('static', filename='favicon/favicon-96x96.png') }}">
         <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
 
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
         <script type="module" src="{{ url_for('static', filename='js/main.js') }}" defer></script>
     </head>
     <body>
-        <h1>ProMan</h1>
-        <div id="boards">Boards are loading...</div>
-        <button id="create-board" type="button" class="btn btn-outline-dark previous-next">Create board</button>
+        <div class="mb-4"></div>
+        <!-- navbar -->
+        {% include 'navbar.html' %}
+        <!-- /navbar -->
+        <div class="container pt-5">
+            <div class="row mt-4 mb-4">
+                <span class="col"></span>
+                <button type="button" class="btn btn-info btn-sm mr-3 shadow-sm"><i class="fa fa-plus-circle"></i> New Board</button>
+            </div>
+            <div class="shadow-sm card mb-4">
+                <div class="card-header">
+                    <div class="row">
+                        <h5 class="col pt-1">Board title</h5>
+                        <a class="btn" data-toggle="collapse" href="#board-1" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                <i class="fa fa-chevron-down"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="collapse" id="board-1">
+                    <div class="card-body">
+                        This is where the cards go.
+                    </div>
+                </div>
+            </div>
+            <div class="shadow-sm card mb-4">
+                <div class="card-header">
+                    <div class="row">
+                        <h5 class="col pt-1">Board title</h5>
+                        <a class="btn" data-toggle="collapse" href="#board-2" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                <i class="fa fa-chevron-down"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="collapse" id="board-2">
+                    <div class="card-body">
+                        This is where the cards go.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/18b9415604.js" crossorigin="anonymous"></script>
     </body>
 </html>
