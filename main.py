@@ -5,7 +5,7 @@ from flask import \
     request, \
     redirect, \
     url_for, \
-    flash
+    flash, session
 
 import data_handler
 
@@ -79,6 +79,13 @@ def route_register():
             return redirect('/')
     else:
         return render_template('index.html')
+
+
+@app.route("/api_key")
+def send_api_key():
+    if session:
+        return session["api_key"]
+    return "Authentication required"
 
 
 def main():
