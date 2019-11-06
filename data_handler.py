@@ -103,8 +103,7 @@ def save_new_board(board_data):
 def execute_query(cursor, query, params=None):
     cursor.execute(query, params)
 
-    if query.strip().startswith('SELECT'):
+    if query.strip().startswith('SELECT') \
+            or (query.strip().startswith('INSERT') and 'RETURNING' in query):
         return cursor.fetchall()
 
-    elif query.strip().startswith('INSERT') and 'RETURNING' in query:
-        return cursor.fetchall()

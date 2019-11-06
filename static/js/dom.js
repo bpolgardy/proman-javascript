@@ -44,7 +44,6 @@ export let dom = {
             let key = event.key;
             if (key === 'Escape') {
                 // back to original title and dont save
-                 dom.saveNewBoardTitle(event)
             }
             else if (key === 'Enter') {
                 // rename and save
