@@ -5,6 +5,7 @@ from flask import \
     request, \
     redirect, \
     url_for, \
+    session, \
     flash
 
 import data_handler
@@ -18,6 +19,7 @@ def index():
     """
     This is a one-pager which shows all the boards and cards
     """
+    session['url'] = url_for('index')
     return render_template('index.html')
 
 
@@ -29,6 +31,16 @@ def get_boards():
     """
     api_key = request.args.get("api_key")
     return data_handler.get_boards(api_key)
+
+
+@app.route("/get-boards/<id>")
+@json_response
+def get_board(id):
+    """
+    Single board by id
+    """
+    api_key = request.args.get("api_key")
+    return data_handler.get_boards(api_key, id)
 
 
 @app.route("/get-cards/<int:board_id>")
@@ -48,9 +60,10 @@ def route_login():
         user_credentials = request.form.to_dict()
         if log_in_user(user_credentials):
             flash("Login successful")
+            return redirect(session['url'])
 
         error = 'Invalid password and/or username!'
-    return render_template('user_authentication/login.html', error=error)
+    return render_template('index.html', error=error)
 
 
 def record_user(user_data):
@@ -64,6 +77,9 @@ def log_in_user(user_credentials):
     user_credentials_valid = data_handler.validate_user_credentials(user_credentials['username'],
                                                                     user_credentials['password'])
     if user_credentials_valid:
+        session['username'] = user_credentials['username']
+        session['user_id'] = data_handler.get_user_id_for(user_credentials['username'])
+        session['api_key'] = data_handler.get_api_key(session['username'])
         return True
     else:
         return False
@@ -71,14 +87,29 @@ def log_in_user(user_credentials):
 
 @app.route('/register', methods=['GET', 'POST'])
 def route_register():
-    if request.method == 'POST':
+    if request.method == "POST":
         user_data = request.form.to_dict()
         if record_user(user_data):
             log_in_user(user_data)
             flash("Login successful")
-        return redirect('/')
+            return redirect('/')
+    return render_template('index.html')
 
-    return render_template('user_authentication/register.html')
+
+@app.route("/api_key")
+def send_api_key():
+    if session:
+        print(str(session["api_key"]))
+        return str(session["api_key"])
+    return "Authentication required"
+
+
+@app.route('/logout')
+def route_logout():
+    session.pop('username', None)
+    session.pop('user_id', None)
+    flash("You've logged out successfully")
+    return redirect(session['url'])
 
 
 def main():

@@ -3,11 +3,23 @@ from psycopg2 import sql
 
 
 @connection.connection_handler
+def get_api_key_for_user(cursor, username):
+    cursor.execute("""
+                    SELECT api_key
+                    FROM users
+                    WHERE name = %(username)s
+                    """,
+                   {'username': username})
+    user_api_key = cursor.fetchone()
+    return user_api_key["api_key"]
+
+
+@connection.connection_handler
 def get_user_id_by_username(cursor, username):
     cursor.execute("""
                     SELECT id
                     FROM users
-                    WHERE username = %(username)s
+                    WHERE name = %(username)s
                    """,
                    {'username': username})
     user_data = cursor.fetchone()
@@ -29,7 +41,7 @@ def hashed_password_for(cursor, username):
     cursor.execute("""
                     SELECT password
                     FROM users
-                    WHERE username = %(username)s
+                    WHERE name = %(username)s
                    """,
                    {'username': username})
     user_data = cursor.fetchone()

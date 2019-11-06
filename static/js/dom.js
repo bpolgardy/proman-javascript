@@ -1,5 +1,5 @@
 // It uses data_handler.js to visualize elements
-import {dataHandler} from "./data_handler.js";
+import { dataHandler } from "./data_handler.js";
 
 export let dom = {
     init: function () {
@@ -15,22 +15,10 @@ export let dom = {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
 
-        let boardList = '';
-
-        for (let board of boards) {
-            boardList += `
-                <li>${board.title}</li>
-            `;
+        for(const board of boards) {
+            console.log(board);
+            dom.showBoard(board);
         }
-
-        const outerHtml = `
-            <ul class="board-container">
-                ${boardList}
-            </ul>
-        `;
-
-        let boardsContainer = document.querySelector('#boards');
-        boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
     },
     createNewBoard: function(event) {
         let newBoard =
@@ -110,5 +98,10 @@ export let dom = {
         // shows the cards of a board
         // it adds necessary event listeners also
     },
-    // here comes more features
+    showBoard: function (board) {
+        const boardTemplate = document.getElementById('board-template').innerHTML;
+        const compiledBoardsTemplate = Handlebars.compile(boardTemplate);
+        const renderedTemplate = compiledBoardsTemplate(board);
+        document.getElementById('boardsContainer').insertAdjacentHTML('beforeend', renderedTemplate);
+    }
 };

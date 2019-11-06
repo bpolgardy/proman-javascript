@@ -12,6 +12,7 @@ export let dataHandler = {
         fetch(url, {
             method: 'GET',
             credentials: 'same-origin'
+
         })
         .then(response => response.json())  // parse the response as JSON
         .then(json_response => callback(json_response));  // Call the `callback` with the returned object
@@ -19,6 +20,19 @@ export let dataHandler = {
     _api_post: function (url, data, callback) {
         // it is not called from outside
         // sends the data to the API, and calls callback function
+
+        return fetch(url, {
+            method: 'POST',
+            credentials: 'same-origin',
+            body: JSON.stringify(data)
+        })
+            .then(function(response) {
+                return response.json();
+        })
+            .then(function (json) {
+            callback(json);
+        return json;
+        });
     },
     init: function () {
     },
