@@ -1,9 +1,11 @@
 import { dom } from "./dom.js";
-import {utils} from "./utils";
+import {utils} from "./utils.js";
 
+
+;
 // This function is to initialize the application
 function init() {
-    api_key = utils.getApiKey();
+    sessionStorage.setItem("api_key", utils.getApiKey());
     // init data
     dom.init();
     // loads the boards to the screen
