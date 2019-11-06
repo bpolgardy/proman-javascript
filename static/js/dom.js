@@ -77,20 +77,21 @@ export let dom = {
         dom.addClickListener('#createNewBoard', dom.createNewBoard)
     },
     saveNewBoardTitle: function(event) {
-        let title = event.target.value;
-        let boardId = 3; // get it from the server
-
+        let boardData = {};
+        boardData['title'] = event.target.value;
+        boardData['id'] = 3; // get it from the server
+        // send boardData to server is needed
         let savedBoard =
             `<div class="shadow-sm card mb-4">
                 <div class="card-header">
                     <div class="row">
-                        <h5 class="col pt-1">${title}</h5>
-                        <a class="btn" data-toggle="collapse" href="#board-${boardId}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                        <h5 class="col pt-1">${boardData['title']}</h5>
+                        <a class="btn" data-toggle="collapse" href="#board-${boardData['id']}" role="button" aria-expanded="false" aria-controls="collapseExample">
                                 <i class="fa fa-chevron-down"></i>
                         </a>
                     </div>
                 </div>
-                <div class="collapse" id="board-${boardId}">
+                <div class="collapse" id="board-${boardData['id']}">
                     <div class="card-body">
                         This is where the cards go.
                     </div>
