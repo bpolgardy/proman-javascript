@@ -5,6 +5,7 @@ from flask import \
     request, \
     redirect, \
     url_for, \
+    session, \
     flash
 
 import data_handler
@@ -18,6 +19,7 @@ def index():
     """
     This is a one-pager which shows all the boards and cards
     """
+    session['url'] = url_for('index')
     return render_template('index.html')
 
 
@@ -64,6 +66,8 @@ def log_in_user(user_credentials):
     user_credentials_valid = data_handler.validate_user_credentials(user_credentials['username'],
                                                                     user_credentials['password'])
     if user_credentials_valid:
+        session['username'] = user_credentials['username']
+        session['user_id'] = data_handler.get_user_id_for(user_credentials['username'])
         return True
     else:
         return False
@@ -79,6 +83,14 @@ def route_register():
             return redirect('/')
     else:
         return render_template('index.html')
+
+
+@app.route('/logout')
+def route_logout():
+    session.pop('username', None)
+    session.pop('user_id', None)
+    flash("You've logged out successfully")
+    return redirect(session['url'])
 
 
 def main():
