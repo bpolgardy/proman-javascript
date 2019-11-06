@@ -312,7 +312,7 @@ ALTER TABLE ONLY public.cards
 --
 
 GRANT ALL ON SCHEMA public TO PUBLIC;
-GRANT ALL ON SCHEMA public TO proman WITH GRANT OPTION;
+GRANT ALL ON SCHEMA public TO csosz WITH GRANT OPTION;
 GRANT ALL ON SCHEMA public TO pg_monitor WITH GRANT OPTION;
 
 
@@ -320,28 +320,28 @@ GRANT ALL ON SCHEMA public TO pg_monitor WITH GRANT OPTION;
 -- Name: TABLE boards; Type: ACL; Schema: public; Owner: postgres
 --
 
-GRANT ALL ON TABLE public.boards TO proman;
+GRANT ALL ON TABLE public.boards TO csosz;
 
 
 --
 -- Name: TABLE cards; Type: ACL; Schema: public; Owner: postgres
 --
 
-GRANT ALL ON TABLE public.cards TO proman;
+GRANT ALL ON TABLE public.cards TO csosz;
 
 
 --
 -- Name: TABLE statuses; Type: ACL; Schema: public; Owner: postgres
 --
 
-GRANT ALL ON TABLE public.statuses TO proman;
+GRANT ALL ON TABLE public.statuses TO csosz;
 
 
 --
 -- Name: TABLE users; Type: ACL; Schema: public; Owner: postgres
 --
 
-GRANT ALL ON TABLE public.users TO proman;
+GRANT ALL ON TABLE public.users TO csosz;
 
 
 --
