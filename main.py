@@ -60,9 +60,10 @@ def route_login():
         user_credentials = request.form.to_dict()
         if log_in_user(user_credentials):
             flash("Login successful")
+            return redirect(session['url'])
 
         error = 'Invalid password and/or username!'
-    return render_template('user_authentication/login.html', error=error)
+    return render_template('index.html', error=error)
 
 
 def record_user(user_data):
@@ -92,8 +93,7 @@ def route_register():
             log_in_user(user_data)
             flash("Login successful")
             return redirect('/')
-    else:
-        return render_template('index.html')
+    return render_template('index.html')
 
 
 @app.route('/logout')

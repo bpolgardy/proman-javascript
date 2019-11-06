@@ -7,7 +7,7 @@ def get_api_key_for_user(cursor, username):
     cursor.execute("""
                     SELECT api_key
                     FROM users
-                    WHERE username = %(username)s
+                    WHERE name = %(username)s
                     """,
                    {'username': username})
     user_api_key = cursor.fetchone()
