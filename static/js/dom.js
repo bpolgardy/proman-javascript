@@ -33,13 +33,24 @@ export let dom = {
         boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
     },
     createNewBoard: function(event) {
-        let newBoard = '<input type="text" name="cardTitle" value="New board" autofocus />';
+        let newBoard = '<input id="createNewBoard" type="text" name="cardTitle" value="New board" autofocus />';
 
-        document.querySelector('#boards').insertAdjacentHTML('beforeend', newBoard)
+        document.querySelector('#boards').insertAdjacentHTML('beforeend', newBoard);
+
+        document.querySelector('#createNewBoard').addEventListener('keydown', function(event) {
+            let key = event.key;
+            if (key === 'esc') {
+                // back to original title and dont save
+            }
+            else if (key === 'enter') {
+                // rename and save
+            }
+        })
     },
     addClickListener: function(selector, handler) {
-        document.querySelector(selector).addEventListener('click', function (event) {
+        document.querySelector(selector).addEventListener('click', function eventHandler (event) {
             handler(event);
+            event.target.removeEventListener('click', eventHandler);
         })
     },
 
