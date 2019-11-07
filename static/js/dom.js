@@ -1,5 +1,6 @@
 // It uses data_handler.js to visualize elements
 import { dataHandler } from "./data_handler.js";
+import { utils } from "./utils.js";
 
 export let dom = {
     init: function () {
@@ -9,6 +10,7 @@ export let dom = {
         // retrieves boards and makes showBoards called
         dataHandler.getBoards(function(boards){
             dom.showBoards(boards);
+            dom.addBoardControls();
         });
     },
     showBoards: function (boards) {
@@ -16,7 +18,6 @@ export let dom = {
         // it adds necessary event listeners also
 
         for(const board of boards){
-            console.log(board);
             dom.showBoard(board);
         }
     },
@@ -32,5 +33,29 @@ export let dom = {
         const compiledBoardsTemplate = Handlebars.compile(boardTemplate);
         const renderedTemplate = compiledBoardsTemplate(board);
         document.getElementById('boardsContainer').insertAdjacentHTML('beforeend', renderedTemplate);
+    },
+
+    addBoardControls: function () {
+        const boardControls = document.querySelectorAll('#dropdown-control');
+        utils.addEventListenerTo(boardControls, 'click', function() {
+        const clickedElementChildren = event.target.childNodes;
+        let chevron;
+        let target = event.target;
+        
+        if (utils.isEmpty(clickedElementChildren)) {
+            chevron = event.target.classList[1];
+        } else {
+            chevron = clickedElementChildren[1].classList[1];
+            target = target.querySelector('#chevron');
+        }
+
+        if (chevron === 'fa-chevron-down') {
+                target.classList.remove('fa-chevron-down');
+                target.classList.add('fa-chevron-up');
+            } else {
+                target.classList.remove('fa-chevron-up');
+                target.classList.add('fa-chevron-down');
+            }
+        });
     }
 };
