@@ -121,6 +121,15 @@ def create_board():
         return data_handler.save_new_board(board_data)[0]
 
 
+@app.route('/create-card', methods=['POST'])
+@json_response
+def create_card():
+    if request.method == 'POST':
+        card_data = request.get_json(force=True)
+        card_data['user_id'] = session['user_id']
+        return data_handler.save_new_card(card_data)[0]
+
+
 def main():
     app.run(debug=True)
 

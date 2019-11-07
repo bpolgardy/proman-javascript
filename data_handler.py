@@ -99,6 +99,17 @@ def save_new_board(board_data):
     return execute_query(query, params=params)
 
 
+def save_new_card(card_data):
+    query = '''
+            INSERT INTO cards (id, board_id, title, status_id, "order", user_id)
+            VALUES (DEFAULT, %(board_id)s, %(title)s, %(status_id)s, %(order)s, %(user_id)s)
+            RETURNING id, board_id, title, status_id, "order", user_id;
+            '''
+    params = card_data
+
+    return execute_query(query, params=params)
+
+
 @connection.connection_handler
 def execute_query(cursor, query, params=None):
     cursor.execute(query, params)
