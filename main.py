@@ -71,9 +71,12 @@ def route_login():
 @app.route('/update-board/<boardid>', methods=['GET', 'POST'])
 @json_response
 def update(boardid):
-    print(boardid)
-    print(request.get_json(force=True))
-    return request.get_json(force=True)
+    table_name = 'boards'
+
+    new_board_title = request.get_json(force=True)
+    data_handler.update_board_title(boardid, new_board_title)
+    get_data_by_id = data_handler.get_data_by_id(table_name, boardid)
+    return get_data_by_id
 
 
 def record_user(user_data):

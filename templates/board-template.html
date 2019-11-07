@@ -11,9 +11,11 @@
         </div>
         <div class="collapse" id="dropdown-board-{{id}}">
             <div class="card-body">
-                This is where the cards go.
+            {% endraw %}
+            {% include 'board-body.html' %}
+            {% raw %}
             </div>
         </div>
     </div>
 </script>
-{%  endraw %}
+{% endraw %}

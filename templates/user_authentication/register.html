@@ -1,19 +1,23 @@
-        <!-- Modal -->
-    <div class="modal fade" id="registration" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
+<!-- Modal -->
+<div class="modal fade" id="registration" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="registration-title">Registration</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            {% include 'user_authentication/register_form.html' %}
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          </div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="registration-title">Registration</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% include 'user_authentication/register_form.html' %}
+            </div>
+            <div class="modal-footer">
+                <div class="input-group">
+                    <button type="button" class="btn btn-secondary order-2" data-dismiss="modal">Close</button>
+                    <button type="submit" class="submit-button btn btn-primary mr-2 order-1" form="register-form">Register</button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
+</div>

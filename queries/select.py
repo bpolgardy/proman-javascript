@@ -3,6 +3,21 @@ from psycopg2 import sql
 
 
 @connection.connection_handler
+def get_data_by_id(cursor, table_name, row_id):
+    cursor.execute(
+        sql.SQL("""
+                    SELECT *
+                    FROM {table_name}
+                    WHERE id = {row_id}
+                    """,)
+        .format(table_name=sql.Identifier(table_name),
+                row_id=sql.SQL(row_id))
+                )
+    data_by_id = cursor.fetchone()
+    return data_by_id
+
+
+@connection.connection_handler
 def get_api_key_for_user(cursor, username):
     cursor.execute("""
                     SELECT api_key
