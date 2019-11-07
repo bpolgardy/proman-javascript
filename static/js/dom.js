@@ -71,18 +71,64 @@ export let dom = {
         dataHandler.createNewBoard(boardTitle, function(data) {
 
             let savedBoard =
-                `<div class="shadow-sm card mb-4">
+                `<div id="board-${data['id']}" class="shadow-sm card mb-4">
                     <div class="card-header">
                         <div class="row">
                             <h5 class="col pt-1">${data['title']}</h5>
-                            <a class="btn" data-toggle="collapse" href="#board-${data['id']}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            <a class="btn" data-toggle="collapse" href="#dropdown-board-${data['id']}" role="button" aria-expanded="false" aria-controls="collapseExample">
                                     <i class="fa fa-chevron-down"></i>
                             </a>
                         </div>
                     </div>
-                    <div class="collapse" id="board-${data['id']}">
+                    <div class="collapse" id="dropdown-board-${data['id']}">
                         <div class="card-body">
-                            This is where the cards go.
+                            <div class="container">
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-outline-secondary">Add new card</button>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm text-center">
+                                        <div class="card shadow-sm">
+                                            <div class="card-header">
+                                                New
+                                            </div>
+                                            <div class="card-body">
+                                                Cards go here
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm text-center">
+                                        <div class="card shadow-sm">
+                                            <div class="card-header">
+                                                In progress
+                                            </div>
+                                            <div class="card-body">
+                                                Cards go here
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm text-center">
+                                        <div class="card shadow-sm">
+                                            <div class="card-header">
+                                                Testing
+                                            </div>
+                                            <div class="card-body">
+                                                Cards go here
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm text-center">
+                                        <div class="card shadow-sm">
+                                            <div class="card-header">
+                                                Done
+                                            </div>
+                                            <div class="card-body">
+                                                Cards go here
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>`;
