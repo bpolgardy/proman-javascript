@@ -41,7 +41,7 @@ export let dom = {
         const clickedElementChildren = event.target.childNodes;
         let chevron;
         let target = event.target;
-        
+
         if (utils.isEmpty(clickedElementChildren)) {
             chevron = event.target.classList[1];
         } else {
