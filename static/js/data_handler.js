@@ -67,7 +67,16 @@ export let dataHandler = {
     createNewCard: function (cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
     },
-    // here comes more features
+
+    deleteBoard: function(id){
+        let update = {
+            "id": id,
+            "api_key": sessionStorage.getItem("api_key")
+        };
+        this._api_post("/delete-board/" + parseInt(id), update, (response) => {
+            return response;
+        })
+    },
 
     updateBoard: function (id, boardId, title) {
         let update = {

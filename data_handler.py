@@ -104,3 +104,11 @@ def execute_query(cursor, query, params=None):
 
     if query.strip().startswith('SELECT'):
         return cursor.fetchall()
+
+
+def delete_board(id):
+    query = """
+    DELETE from boards WHERE id = {id}
+    """.format(id=util.escape_single_quotes(id))
+    execute_query(query)
+

@@ -1,5 +1,6 @@
 // It uses data_handler.js to visualize elements
 import {dataHandler} from "./data_handler.js";
+import {utils} from "./utils.js";
 
 export let dom = {
     init: function () {
@@ -10,6 +11,9 @@ export let dom = {
         dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
             dom.initRenameHandler();
+            dom.addBoardControls();
+            dom.addDeleteHandler();
+
         });
     },
     showBoards: function (boards) {
@@ -17,7 +21,6 @@ export let dom = {
         // it adds necessary event listeners also
 
         for (const board of boards) {
-            console.log(board);
             dom.showBoard(board);
         }
     },
@@ -33,13 +36,29 @@ export let dom = {
         const compiledBoardsTemplate = Handlebars.compile(boardTemplate);
         const renderedTemplate = compiledBoardsTemplate(board);
         document.getElementById('boardsContainer').insertAdjacentHTML('beforeend', renderedTemplate);
+
     },
 
 
+    addDeleteHandler: function () {
+        let deletButtons = document.getElementsByClassName("delete-button");
+        for (let i = 0; i < deletButtons.length; i++) {
+            let deletButton = deletButtons[i];
+            deletButton.addEventListener("click", function (e) {
+                e.stopPropagation();
+                let boardId = deletButton.dataset.board;
+                let board = deletButton.dataset.boardName;
+                dataHandler.deleteBoard(boardId);
+                document.getElementById(board).remove();
+
+            })
+        }
+    },
+
     initRenameHandler: function () {
         let boards = document.getElementsByClassName("promanBoard");
+
         // let boards = document.getElementsByClassName("promanBoard")[0].getElementsByTagName("h5");
-        console.log(boards.length);
 
 
         function saveBoardName(id, boardId) {
@@ -50,7 +69,6 @@ export let dom = {
             let h5 = boards[i].getElementsByTagName("H5")[0];
             let done = true;
             h5.addEventListener('click', function (e) {
-                console.log(h5.childNodes);
                 if (done) {
                     done = false;
                     e.stopPropagation();
@@ -64,21 +82,11 @@ export let dom = {
                     saveButton.textContent = ("save");
                     saveButton.classList.add("btn");
                     saveButton.addEventListener("click", function (e) {
-                            e.stopPropagation();
-                            let id = boards[i].id.substr(6);
-                            dataHandler.updateBoard(id, boards[i].id, newTitle.value);
-                            h5.innerHTML = newTitle.value;
-                            done = true;
-                            // while (h5.firstChild.hasChildNodes()){
-                            //     h5.firstChild.firstChild.remove();
-                            // }
-                            // // this.parentElement.remove();
-                            // document.querySelector("#keksz").remove();
-                            // console.log(h5.children);
-                            // h5.textContent = text;
-                            // done = true;
-                            // console.log("/////////////")
-                            // console.log(h5.childNodes)
+                        e.stopPropagation();
+                        let id = boards[i].id.substr(6);
+                        dataHandler.updateBoard(id, boards[i].id, newTitle.value);
+                        h5.innerHTML = newTitle.value;
+                        done = true;
                     });
 
                     newTitle.value = originaltitleDisplay.textContent;
@@ -99,6 +107,29 @@ export let dom = {
                 }
             });
         }
-    }
+    },
 
+    addBoardControls: function () {
+        const boardControls = document.querySelectorAll('#dropdown-control');
+        utils.addEventListenerTo(boardControls, 'click', function () {
+            const clickedElementChildren = event.target.childNodes;
+            let chevron;
+            let target = event.target;
+
+            if (utils.isEmpty(clickedElementChildren)) {
+                chevron = event.target.classList[1];
+            } else {
+                chevron = clickedElementChildren[1].classList[1];
+                target = target.querySelector('#chevron');
+            }
+
+            if (chevron === 'fa-chevron-down') {
+                target.classList.remove('fa-chevron-down');
+                target.classList.add('fa-chevron-up');
+            } else {
+                target.classList.remove('fa-chevron-up');
+                target.classList.add('fa-chevron-down');
+            }
+        });
+    }
 };

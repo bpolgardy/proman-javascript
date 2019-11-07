@@ -74,10 +74,10 @@ def update(boardid):
     table_name = 'boards'
 
     new_board_title = request.get_json(force=True)
-    print()
     data_handler.update_board_title(boardid, new_board_title)
     get_data_by_id = data_handler.get_data_by_id(table_name, boardid)
     return get_data_by_id
+
 
 def record_user(user_data):
     username_is_unique = data_handler.is_username_unique(user_data['username'])
@@ -112,9 +112,15 @@ def route_register():
 @app.route("/api_key")
 def send_api_key():
     if session:
-        print(str(session["api_key"]))
         return str(session["api_key"])
     return "Authentication required"
+
+@app.route("/delete-board/<id>", methods=["POST", "GET"])
+@json_response
+def delete_board(id):
+    if session["username"]:
+        data_handler.delete_board(id)
+    return request.get_json(force=True)
 
 
 @app.route('/logout')
