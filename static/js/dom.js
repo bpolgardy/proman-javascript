@@ -96,6 +96,9 @@ export let dom = {
         const compiledBoardsTemplate = Handlebars.compile(boardTemplate);
         const renderedTemplate = compiledBoardsTemplate(board);
         document.getElementById('boardsContainer').insertAdjacentHTML('beforeend', renderedTemplate);
+        document.querySelector(`#board-${board['id']}`).querySelector("#newCardButton").addEventListener('click', function(event) {
+            dom.insertNewCard(event, board);
+        });
     },
 
     addBoardControls: function () {
@@ -120,9 +123,6 @@ export let dom = {
                 target.classList.add('fa-chevron-down');
             }
         });
-        document.querySelector(`#board-${board['id']}`).querySelector("#newCardButton").addEventListener('click', function(event) {
-            dom.insertNewCard(event, board);
-        })
     },
     createCardElement: function(cardData) {
         let card = `<div class="card" data-board_id="${cardData['board_id']}" data-status_id="${cardData['status_id']}" data-order="${cardData['order']}">
