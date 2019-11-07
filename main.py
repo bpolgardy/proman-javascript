@@ -1,3 +1,5 @@
+import json
+
 from util import json_response
 from flask import \
     Flask, \
@@ -64,6 +66,17 @@ def route_login():
 
         error = 'Invalid password and/or username!'
     return render_template('index.html', error=error)
+
+
+@app.route('/update-board/<boardid>', methods=['GET', 'POST'])
+@json_response
+def update(boardid):
+    table_name = 'boards'
+
+    new_board_title = request.get_json(force=True)
+    data_handler.update_board_title(boardid, new_board_title)
+    get_data_by_id = data_handler.get_data_by_id(table_name, boardid)
+    return get_data_by_id
 
 
 def record_user(user_data):

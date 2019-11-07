@@ -1,6 +1,6 @@
 import persistence
 import connection
-from queries import select, insert
+from queries import select, insert, update
 import util
 
 
@@ -86,6 +86,16 @@ def record_user(user_data):
     if username_is_unique:
         insert_user(user_data)
         return True
+
+
+def update_board_title(board_id, new_title):
+    new_title = new_title['title']
+    update.update_board_title(board_id, new_title)
+
+
+def get_data_by_id(table_name, row_id):
+    row_data = select.get_data_by_id(table_name, row_id)
+    return row_data
 
 
 @connection.connection_handler
