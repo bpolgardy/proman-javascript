@@ -112,5 +112,11 @@ export let dom = {
         const compiledBoardsTemplate = Handlebars.compile(boardTemplate);
         const renderedTemplate = compiledBoardsTemplate(board);
         document.getElementById('boardsContainer').insertAdjacentHTML('beforeend', renderedTemplate);
+    },
+    createCardElement: function(cardData) {
+        let card = `<div class="card" data-board_id="${cardData['board_id']}" data-status_id="${cardData['status_id']}" data-order="${cardData['order']}">
+                        <div class="card-dismiss"><i class="fas fa-times"></i></div>
+                        <div class="card-body">
+                            <h5 class="card-title">${cardData['title']}</h5>`
     }
 };
