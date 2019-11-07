@@ -75,7 +75,7 @@ export let dataHandler = {
             "api_key": sessionStorage.getItem("api_key")
         };
         console.log("asd");
-        this._api_post("/update-board/"+ parseInt(id), (update), (response) => {
+        this._api_post("/update-board/"+ parseInt(id), JSON.stringify(update), (response) => {
             return response;
         });
     }
