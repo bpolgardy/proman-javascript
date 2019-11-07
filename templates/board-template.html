@@ -1,6 +1,6 @@
 {% raw %}
 <script id="board-template" type="text/x-handlebars-template">
-    <div class="shadow-sm card mb-4 border border-secondary" id="board-{{id}}">
+    <div class="shadow-sm card mb-4" id="board-{{id}}">
         <div class="card-header">
             <div class="row">
                 <h5 class="col pt-1">{{title}}</h5>
@@ -11,9 +11,52 @@
         </div>
         <div class="collapse" id="dropdown-board-{{id}}">
             <div class="card-body">
-                This is where the cards go.
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm text-center">
+                            <div class="card shadow-sm">
+                                <div class="card-header">
+                                    New
+                                </div>
+                                <div class="card-body">
+                                    Cards go here
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <div class="card shadow-sm">
+                                <div class="card-header">
+                                    In progress
+                                </div>
+                                <div class="card-body">
+                                    Cards go here
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <div class="card shadow-sm">
+                                <div class="card-header">
+                                    Testing
+                                </div>
+                                <div class="card-body">
+                                    Cards go here
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <div class="card shadow-sm">
+                                <div class="card-header">
+                                    Done
+                                </div>
+                                <div class="card-body">
+                                    Cards go here
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </script>
-{%  endraw %}
+{% endraw %}
