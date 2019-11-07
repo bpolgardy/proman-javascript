@@ -1,7 +1,7 @@
 {% raw %}
 <script id="board-template" type="text/x-handlebars-template">
-    <div class="shadow-sm card mb-4" id="board-{{id}}">
-        <div class="card-header">
+    <div class="shadow card mb-4 border-0" id="board-{{id}}">
+        <div class="card-header platinum">
             <div class="row">
                 <h5 class="col pt-1">{{title}}</h5>
                 <a class="btn" id="dropdown-control" data-toggle="collapse" href="#dropdown-board-{{id}}" role="button" aria-expanded="false" aria-controls="collapseExample">
@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="collapse" id="dropdown-board-{{id}}">
-            <div class="card-body">
+            <div class="card-body white">
             {% endraw %}
             {% include 'board-body.html' %}
             {% raw %}
