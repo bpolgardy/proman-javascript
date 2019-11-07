@@ -1,6 +1,6 @@
 {% raw %}
 <script id="board-template" type="text/x-handlebars-template">
-    <div class="shadow-sm card mb-4">
+    <div class="shadow-sm card mb-4" id="board-{{id}}">
         <div class="card-header">
             <div class="row">
                 <h5 class="col pt-1">{{title}}</h5>
@@ -11,9 +11,11 @@
         </div>
         <div class="collapse" id="dropdown-board-{{id}}">
             <div class="card-body">
-                This is where the cards go.
+            {% endraw %}
+            {% include 'board-body.html' %}
+            {% raw %}
             </div>
         </div>
     </div>
 </script>
-{%  endraw %}
+{% endraw %}
