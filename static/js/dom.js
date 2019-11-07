@@ -118,5 +118,11 @@ export let dom = {
                         <div class="card-dismiss"><i class="fas fa-times"></i></div>
                         <div class="card-body">
                             <h5 class="card-title">${cardData['title']}</h5>`
+
+        return card
+    },
+    insertNewCard: function() {
+        let cardData;
+        let newCard = dom.createCardElement(cardData);
     }
 };
