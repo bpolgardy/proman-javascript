@@ -47,9 +47,13 @@ export let dom = {
         }
 
         for (let i = 0; i < boards.length; i++) {
-
-            boards[i].getElementsByTagName("H5")[0].addEventListener('click', function () {
-                if (! boards[i].getElementsByTagName("H5")[0].firstChild.firstChild) {
+            let h5 = boards[i].getElementsByTagName("H5")[0];
+            let done = true;
+            h5.addEventListener('click', function (e) {
+                console.log(h5.childNodes);
+                if (done) {
+                    done = false;
+                    e.stopPropagation();
                     let originaltitleDisplay = boards[i].getElementsByTagName("H5")[0];
                     let text = originaltitleDisplay.textContent;
                     let newTitle = document.createElement("input");
@@ -57,20 +61,34 @@ export let dom = {
                     let saveButton = document.createElement("button")
 
 
-                    span.classList.add("d-flex");
-                    span.classList.add("w-50");
-                    span.style.width = "100%";
-
                     saveButton.textContent = ("save");
                     saveButton.classList.add("btn");
                     saveButton.addEventListener("click", function (e) {
-                        let id = boards[i].id.substr(6);
-                        dataHandler.updateBoard(id, boards[i].id, newTitle.value);
+                            e.stopPropagation();
+                            let id = boards[i].id.substr(6);
+                            dataHandler.updateBoard(id, boards[i].id, newTitle.value);
+                            h5.innerHTML = newTitle.value;
+                            done = true;
+                            // while (h5.firstChild.hasChildNodes()){
+                            //     h5.firstChild.firstChild.remove();
+                            // }
+                            // // this.parentElement.remove();
+                            // document.querySelector("#keksz").remove();
+                            // console.log(h5.children);
+                            // h5.textContent = text;
+                            // done = true;
+                            // console.log("/////////////")
+                            // console.log(h5.childNodes)
                     });
 
                     newTitle.value = originaltitleDisplay.textContent;
                     newTitle.classList.add("col");
                     newTitle.style.maxWidth = "20%";
+
+                    span.classList.add("d-flex");
+                    span.classList.add("w-50");
+                    span.style.width = "100%";
+                    span.id = "keksz";
 
                     span.appendChild(newTitle);
                     boards[i].firstElementChild.firstElementChild.insertAdjacentElement("afterbegin", span);
