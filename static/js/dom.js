@@ -1,5 +1,5 @@
 // It uses data_handler.js to visualize elements
-import { dataHandler } from "./data_handler.js";
+import {dataHandler} from "./data_handler.js";
 
 export let dom = {
     init: function () {
@@ -7,15 +7,16 @@ export let dom = {
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
-        dataHandler.getBoards(function(boards){
+        dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
+            dom.initRenameHandler();
         });
     },
     showBoards: function (boards) {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
 
-        for(const board of boards){
+        for (const board of boards) {
             console.log(board);
             dom.showBoard(board);
         }
@@ -32,5 +33,54 @@ export let dom = {
         const compiledBoardsTemplate = Handlebars.compile(boardTemplate);
         const renderedTemplate = compiledBoardsTemplate(board);
         document.getElementById('boardsContainer').insertAdjacentHTML('beforeend', renderedTemplate);
+    },
+
+
+    initRenameHandler: function () {
+        let boards = document.getElementsByClassName("promanBoard");
+        // let boards = document.getElementsByClassName("promanBoard")[0].getElementsByTagName("h5");
+        console.log(boards.length);
+
+
+        function saveBoardName(id, boardId) {
+
+        }
+
+        for (let i = 0; i < boards.length; i++) {
+
+            boards[i].getElementsByTagName("H5")[0].addEventListener('click', function () {
+                if (! boards[i].getElementsByTagName("H5")[0].firstChild.firstChild) {
+                    let originaltitleDisplay = boards[i].getElementsByTagName("H5")[0];
+                    let text = originaltitleDisplay.textContent;
+                    let newTitle = document.createElement("input");
+                    let span = document.createElement("span");
+                    let saveButton = document.createElement("button")
+
+
+                    span.classList.add("d-flex");
+                    span.classList.add("w-50");
+                    span.style.width = "100%";
+
+                    saveButton.textContent = ("save");
+                    saveButton.classList.add("btn");
+                    saveButton.addEventListener("click", function (e) {
+                        let id = boards[i].id.substr(6);
+                        dataHandler.updateBoard(id, boards[i].id, newTitle.value);
+                    });
+
+                    newTitle.value = originaltitleDisplay.textContent;
+                    newTitle.classList.add("col");
+                    newTitle.style.maxWidth = "20%";
+
+                    span.appendChild(newTitle);
+                    boards[i].firstElementChild.firstElementChild.insertAdjacentElement("afterbegin", span);
+                    originaltitleDisplay.textContent = "";
+                    originaltitleDisplay.append(span);
+                    span.append(saveButton);
+                    // document.getElementById(boards[i].id + "-title").remove();
+                }
+            });
+        }
     }
+
 };

@@ -66,6 +66,18 @@ export let dataHandler = {
     },
     createNewCard: function (cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
-    }
+    },
     // here comes more features
+
+    updateBoard: function (id, boardId, title) {
+        let update = {
+            "title": title,
+            "api_key": sessionStorage.getItem("api_key")
+        };
+        console.log("asd");
+        this._api_post("/update-board/"+ parseInt(id), JSON.stringify(update), (response) => {
+            return response;
+        });
+    }
+
 };

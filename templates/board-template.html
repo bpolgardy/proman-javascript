@@ -1,10 +1,10 @@
 {% raw %}
 <script id="board-template" type="text/x-handlebars-template">
-    <div class="shadow-sm card mb-4 border border-secondary" id="board-{{id}}">
+    <div class="shadow-sm card mb-4 border border-secondary promanBoard" id="board-{{id}}">
         <div class="card-header">
             <div class="row">
-                <h5 class="col pt-1">{{title}}</h5>
-                <a class="btn" data-toggle="collapse" href="#dropdown-board-{{id}}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                <h5 class="col pt-1" id="board-{{id}}-title">{{title}}</h5>
+                <a class="btn col-auto text-right" data-toggle="collapse" href="#dropdown-board-{{id}}" role="button" aria-expanded="false" aria-controls="collapseExample">
                         <i class="fa fa-chevron-down"></i>
                 </a>
             </div>
