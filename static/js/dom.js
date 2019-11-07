@@ -96,11 +96,11 @@ export let dom = {
         const compiledBoardsTemplate = Handlebars.compile(boardTemplate);
         const renderedTemplate = compiledBoardsTemplate(board);
         document.getElementById('boardsContainer').insertAdjacentHTML('beforeend', renderedTemplate);
-        document.querySelector(`#board-${board['id']}`).querySelector("#newCardButton").addEventListener('click', function(event) {
+        document.querySelector(`#board-${board['id']}`).querySelector("#newCardButton").addEventListener('click', function createNewCardHandler(event) {
+            event.target.removeEventListener('click', createNewCardHandler);
             dom.insertNewCard(event, board);
         });
     },
-
     addBoardControls: function () {
         const boardControls = document.querySelectorAll('#dropdown-control');
         utils.addEventListenerTo(boardControls, 'click', function() {
@@ -125,10 +125,10 @@ export let dom = {
         });
     },
     createCardElement: function(cardData) {
-        let card = `<div class="card" data-board_id="${cardData['board_id']}" data-status_id="${cardData['status_id']}" data-order="${cardData['order']}">
-                        <div class="card-dismiss"><i class="fas fa-times"></i></div>
-                        <div class="card-body">
-                            <h5 class="card-title">${cardData['title']}</h5>`;
+        let card = `<div class="card" data-id="newCard" data-board_id="${cardData['board_id']}" data-status_id="${cardData['status_id']}" data-order="${cardData['order']}">
+                        <div class="card-dismiss d-flex justify-content-end mt-2 mr-2"><i class="fas fa-save fa-lg p-2"></i><i class="fas fa-times fa-sm p-2"></i></div>
+                        <div class="card-body float-left">
+                            <h5 class="card-title text-left text-align-top"><input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" value="New card"/></h5>`;
 
         return card
     },
@@ -140,6 +140,24 @@ export let dom = {
 
         let newCard = dom.createCardElement(cardData);
         let cardContainer = document.querySelector(`#board-${cardData['board_id']}`).querySelector(`[data-col = '${cardData['status_id']}']`);
-        cardContainer.innerHTML = newCard
+        cardContainer.insertAdjacentHTML('beforeend', newCard);
+        dom.addNewCardControl(cardContainer);
+    },
+    addNewCardControl: function(container) {
+        let newCard = container.querySelector('[data-id = "newCard"]');
+        let inputCardTitle = newCard.querySelector('#createNewCardTitle');
+        let saveIcon = newCard.querySelector('.fa-save');
+        let dismissIcon = newCard.querySelector('.fa-times');
+
+
+        inputCardTitle.addEventListener('keydown', function (event) {
+
+        });
+        saveIcon.addEventListener('click', function (event) {
+
+        });
+        dismissIcon.addEventListener('click', function (event) {
+            newCard.remove();
+        });
     }
 };
