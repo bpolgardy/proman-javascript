@@ -70,72 +70,9 @@ export let dom = {
         boardTitle['title'] = event.target.value;
         dataHandler.createNewBoard(boardTitle, function(data) {
 
-            let savedBoard =
-                `<div id="board-${data['id']}" class="shadow-sm card mb-4">
-                    <div class="card-header">
-                        <div class="row">
-                            <h5 class="col pt-1">${data['title']}</h5>
-                            <a class="btn" data-toggle="collapse" href="#dropdown-board-${data['id']}" role="button" aria-expanded="false" aria-controls="collapseExample">
-                                    <i class="fa fa-chevron-down"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="collapse" id="dropdown-board-${data['id']}">
-                        <div class="card-body">
-                            <div class="container">
-                                <div class="mb-3">
-                                    <button type="button" class="btn btn-outline-secondary">Add new card</button>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm text-center">
-                                        <div class="card shadow-sm">
-                                            <div class="card-header">
-                                                New
-                                            </div>
-                                            <div class="card-body">
-                                                Cards go here
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm text-center">
-                                        <div class="card shadow-sm">
-                                            <div class="card-header">
-                                                In progress
-                                            </div>
-                                            <div class="card-body">
-                                                Cards go here
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm text-center">
-                                        <div class="card shadow-sm">
-                                            <div class="card-header">
-                                                Testing
-                                            </div>
-                                            <div class="card-body">
-                                                Cards go here
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm text-center">
-                                        <div class="card shadow-sm">
-                                            <div class="card-header">
-                                                Done
-                                            </div>
-                                            <div class="card-body">
-                                                Cards go here
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-
             document.getElementById('newBoard').remove();
-            document.querySelector('#boardsContainer').insertAdjacentHTML('beforeend', savedBoard);
-            dom.addClickListener('#createNewBoard', dom.createNewBoard)
+            dom.showBoard(data);
+            dom.addClickListener('#createNewBoard', dom.createNewBoard);
         });
     },
     handleUnsavedTitle: function(event, originalTitle) {
@@ -158,17 +95,26 @@ export let dom = {
         const compiledBoardsTemplate = Handlebars.compile(boardTemplate);
         const renderedTemplate = compiledBoardsTemplate(board);
         document.getElementById('boardsContainer').insertAdjacentHTML('beforeend', renderedTemplate);
+        document.querySelector(`#board-${board['id']}`).querySelector("#newCardButton").addEventListener('click', function(event) {
+            dom.insertNewCard(event, board);
+        })
     },
     createCardElement: function(cardData) {
         let card = `<div class="card" data-board_id="${cardData['board_id']}" data-status_id="${cardData['status_id']}" data-order="${cardData['order']}">
                         <div class="card-dismiss"><i class="fas fa-times"></i></div>
                         <div class="card-body">
-                            <h5 class="card-title">${cardData['title']}</h5>`
+                            <h5 class="card-title">${cardData['title']}</h5>`;
 
         return card
     },
-    insertNewCard: function() {
-        let cardData;
+    insertNewCard: function(event, board) {
+        let cardData = {'title': 'New card',
+                        'board_id': board['id'],
+                        'status_id': 1,
+                        'order': 1};
+
         let newCard = dom.createCardElement(cardData);
+        let cardContainer = document.querySelector(`#board-${cardData['board_id']}`).querySelector(`[data-col = '${cardData['status_id']}']`);
+        cardContainer.innerHTML = newCard
     }
 };
