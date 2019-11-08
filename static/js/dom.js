@@ -98,7 +98,7 @@ export let dom = {
         document.getElementById('boardsContainer').insertAdjacentHTML('beforeend', renderedTemplate);
         document.querySelector(`#board-${board['id']}`).querySelector("#newCardButton").addEventListener('click', function createNewCardHandler(event) {
             event.target.removeEventListener('click', createNewCardHandler);
-            dom.insertNewCard(event, board);
+            dom.insertNewCard(event, board['id']);
         });
     },
     addBoardControls: function () {
@@ -132,9 +132,9 @@ export let dom = {
 
         return card
     },
-    insertNewCard: function(event, board) {
+    insertNewCard: function(event, boardId) {
         let cardData = {'title': 'New card',
-                        'board_id': board['id'],
+                        'board_id': boardId,
                         'status_id': 1,
                         'order': 1};
 
@@ -148,7 +148,7 @@ export let dom = {
         let inputCardTitle = newCard.querySelector('#createNewCardTitle');
         let saveIcon = newCard.querySelector('.fa-save');
         let dismissIcon = newCard.querySelector('.fa-times');
-
+        let boardId = dismissIcon.parentElement.parentElement.dataset.board_id;
 
         inputCardTitle.addEventListener('keydown', function (event) {
 
@@ -157,7 +157,13 @@ export let dom = {
 
         });
         dismissIcon.addEventListener('click', function (event) {
+
             newCard.remove();
+            let newCardButton = document.querySelector(`#board-${boardId}`).querySelector('#newCardButton');
+            newCardButton.addEventListener('click', function createNewCardHandler(event) {
+                event.target.removeEventListener('click', createNewCardHandler);
+                dom.insertNewCard(event, boardId);
+            });
         });
     }
 };
