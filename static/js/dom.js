@@ -150,6 +150,8 @@ export let dom = {
         let dismissIcon = newCard.querySelector('.fa-times');
         let boardId = dismissIcon.parentElement.parentElement.dataset.board_id;
 
+        inputCardTitle.focus();
+
         inputCardTitle.addEventListener('keydown', function (event) {
 
         });
