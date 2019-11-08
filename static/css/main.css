@@ -15,6 +15,18 @@
     color: white;
 }
 
-.edit{
-    display: flow;
+.snow {
+    background-color: #F9F9F9;
+}
+
+.platinum {
+    background-color: #EEE4E1;
+}
+
+.white {
+    background-color: #ffffff;
+}
+
+.card-height{
+    min-height: 20rem;
 }

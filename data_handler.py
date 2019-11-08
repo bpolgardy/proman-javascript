@@ -1,6 +1,6 @@
 import persistence
 import connection
-from queries import select, insert, update
+from queries import select, insert
 import util
 
 
@@ -98,11 +98,34 @@ def get_data_by_id(table_name, row_id):
     return row_data
 
 
+def save_new_board(board_data):
+    query = """
+            INSERT INTO boards (id, title, user_id)
+            VALUES (DEFAULT, %(title)s, %(user_id)s)
+            RETURNING id, title, user_id;
+            """
+    params = board_data
+
+    return execute_query(query, params=params)
+
+
+def save_new_card(card_data):
+    query = '''
+            INSERT INTO cards (id, board_id, title, status_id, "order", user_id)
+            VALUES (DEFAULT, %(board_id)s, %(title)s, %(status_id)s, %(order)s, %(user_id)s)
+            RETURNING id, board_id, title, status_id, "order", user_id;
+            '''
+    params = card_data
+
+    return execute_query(query, params=params)
+
+
 @connection.connection_handler
 def execute_query(cursor, query, params=None):
     cursor.execute(query, params)
 
-    if query.strip().startswith('SELECT'):
+    if query.strip().startswith('SELECT') \
+            or (query.strip().startswith('INSERT') and 'RETURNING' in query):
         return cursor.fetchall()
 
 

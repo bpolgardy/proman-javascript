@@ -1,7 +1,7 @@
 {% raw %}
 <script id="board-template" type="text/x-handlebars-template">
-    <div class="shadow-sm card mb-4 border border-secondary promanBoard" id="board-{{id}}">
-        <div class="card-header">
+    <div class="shadow card mb-4 border-0 promanBoard" id="board-{{id}}">
+        <div class="card-header platinum">
             <div class="row">
                 <h5 class="col pt-1" id="board-{{id}}-title">{{title}}</h5>
                 <a class="btn delete-button" id="board-{{id}}-delete" data-board="{{id}}"  data-board-name="board-{{id}}" href="#dropdown-board-{{id}}" role="button">
@@ -12,13 +12,12 @@
             </div>
         </div>
         <div class="collapse" id="dropdown-board-{{id}}">
-            <div class="card-body">
-                {% endraw %}
-                {% include 'board-body.html' %}
-                {% raw %}
+            <div class="card-body white">
+            {% endraw %}
+            {% include 'board-body.html' %}
+            {% raw %}
             </div>
         </div>
     </div>
 </script>
 {% endraw %}
-

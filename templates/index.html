@@ -16,15 +16,15 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js"></script>
         <script type="module" src="{{ url_for('static', filename='js/main.js') }}" defer></script>
     </head>
-    <body>
+    <body class="snow">
         <div class="mb-4"></div>
         <!-- navbar -->
         {% include 'navbar.html' %}
         <!-- /navbar -->
-        <div class="container pt-5">
+        <div id="boardsContainer" class="container pt-5">
             <div class="row mt-4 mb-4">
                 <span class="col"></span>
-                <button type="button" class="btn btn-info mr-3 shadow-sm"><i class="fa fa-plus-circle"></i> New Board</button>
+                <button id="createNewBoard" type="button" class="btn btn-info mr-3 shadow-sm"><i class="fa fa-plus-circle"></i> New Board</button>
             </div>
             <div id="boardsContainer">
 

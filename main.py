@@ -115,6 +115,7 @@ def send_api_key():
         return str(session["api_key"])
     return "Authentication required"
 
+
 @app.route("/delete-board/<id>", methods=["POST", "GET"])
 @json_response
 def delete_board(id):
@@ -129,6 +130,26 @@ def route_logout():
     session.pop('user_id', None)
     flash("You've logged out successfully")
     return redirect(session['url'])
+
+
+@app.route('/create-board', methods=['POST'])
+@json_response
+def create_board():
+    if request.method == 'POST' and session["username"]:
+        board_data = request.get_json(force=True)
+        board_data['user_id'] = session['user_id']
+        return data_handler.save_new_board(board_data)[0]
+    else:
+        return "Authentication required"
+
+
+@app.route('/create-card', methods=['POST'])
+@json_response
+def create_card():
+    if request.method == 'POST':
+        card_data = request.get_json(force=True)
+        card_data['user_id'] = session['user_id']
+        return data_handler.save_new_card(card_data)[0]
 
 
 def main():
