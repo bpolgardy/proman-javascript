@@ -1,6 +1,6 @@
 import persistence
 import connection
-from queries import select, insert
+from queries import select, insert, update
 import util
 
 
