@@ -200,7 +200,7 @@ export let dom = {
     },
 
     createCardElement: function(cardData) {
-        let card = `<div class="card" data-id="newCard" data-board_id="${cardData['board_id']}" data-status_id="${cardData['status_id']}" data-order="${cardData['order']}">
+        let card = `<div class="card proman-card" data-id="newCard" data-board_id="${cardData['board_id']}" data-status_id="${cardData['status_id']}" data-order="${cardData['order']}">
                         <div class="card-dismiss d-flex justify-content-end mt-2 mr-2"><i class="fas fa-save fa-lg p-2"></i><i class="fas fa-times fa-sm p-2"></i></div>
                         <div class="card-body float-left">
                             <h5 class="card-title text-left text-align-top"><input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" value="New card"/></h5>`;
@@ -243,5 +243,37 @@ export let dom = {
                 dom.insertNewCard(event, boardId);
             });
         });
+    },
+    addEventListenerToCards: function(){
+        let cardElements = document.getElementsByClassName('card proman-card');
+        for (let cardElement of cardElements) {
+            cardElement.addEventListener('dragstart', function () {
+                console.log('dragstart');
+            });
+            cardElement.addEventListener('dragend', function () {
+                console.log('dragend');
+            });
+        }
+    },
+    addEventListenerToOtherCards: function(){
+        let cardElements = document.getElementsByClassName('card proman-card');
+        for (let cardElement of cardElements) {
+            cardElement.addEventListener('dragenter', function () {
+                event.preventDefault();
+                console.log("dragenter");
+            });
+            cardElement.addEventListener('dragleave', function () {
+                event.preventDefault();
+                console.log("dragleave");
+            });
+            cardElement.addEventListener('dragover', function () {
+                event.preventDefault();
+                console.log("dragover");
+            });
+            cardElement.addEventListener('drop', function () {
+                console.log('dragdrop');
+                event.preventDefault();
+            });
+        }
     }
 };
