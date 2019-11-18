@@ -88,16 +88,35 @@ export let dom = {
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
+        dataHandler.getCardsByBoardId(boardId, function (cards) {
+            dom.showCards(cards)
+            })
     },
     showCards: function (cards) {
         // shows the cards of a board
         // it adds necessary event listeners also
+        for (let card of cards) {
+            dom.showCard(card);
+        }
     },
+    showCard: function(card) {
+        let cardTemplate = document.getElementById('card-template').innerHTML;
+        let compiledCardTemplate = Handlebars.compile(cardTemplate);
+        let renderedTemplate = compiledCardTemplate(card);
+        let board = document.getElementById(`board-${card['board_id']}`);
+        let column = board.querySelector(`[data-col="${card['status_id']}"]`);
+        column.insertAdjacentHTML('beforeend', renderedTemplate);
+        let columns = document.getElementsByClassName('proman-column');
+        let cardElements = document.getElementsByClassName('proman-card');
+        dom.handleDragAndDrop(cardElements, columns);
+    },
+
     showBoard: function (board) {
         const boardTemplate = document.getElementById('board-template').innerHTML;
         const compiledBoardsTemplate = Handlebars.compile(boardTemplate);
         const renderedTemplate = compiledBoardsTemplate(board);
         document.getElementById('boardsContainer').insertAdjacentHTML('beforeend', renderedTemplate);
+        dom.loadCards(board['id']);
         document.querySelector(`#board-${board['id']}`).querySelector("#newCardButton").addEventListener('click', function createNewCardHandler(event) {
             event.target.removeEventListener('click', createNewCardHandler);
             dom.insertNewCard(event, board['id']);
@@ -200,11 +219,14 @@ export let dom = {
     },
 
     createCardElement: function(cardData) {
-        let card = `<div class="card proman-card" data-id="newCard" data-board_id="${cardData['board_id']}" data-status_id="${cardData['status_id']}" data-order="${cardData['order']}">
-                        <div class="card-dismiss d-flex justify-content-end mt-2 mr-2"><i class="fas fa-save fa-lg p-2"></i><i class="fas fa-times fa-sm p-2"></i></div>
-                        <div class="card-body float-left">
-                            <h5 class="card-title text-left text-align-top"><input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" value="New card"/></h5>`;
-
+        let card = `<div class="card-container proman-card" draggable="true">
+                        <div class="card" data-id="newCard" data-board_id="${cardData['board_id']}" data-status_id="${cardData['status_id']}" data-order="${cardData['order']}">
+                            <div class="card-dismiss d-flex justify-content-end mt-2 mr-2"><i class="fas fa-save fa-lg p-2"></i><i class="fas fa-times fa-sm p-2"></i></div>
+                            <div class="card-body float-left">
+                                <h5 class="card-title text-left text-align-top"><input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" value="New card"/></h5>
+                            </div>
+                        </div>
+                    </div>`;
         return card
     },
 
@@ -244,35 +266,38 @@ export let dom = {
             });
         });
     },
-    addEventListenerToCards: function(){
-        let cardElements = document.getElementsByClassName('card proman-card');
+    handleDragAndDrop: function(cardElements, columns) {
+        let draggedElement;
+
         for (let cardElement of cardElements) {
             cardElement.addEventListener('dragstart', function () {
                 console.log('dragstart');
+                draggedElement = this.cloneNode(true);
+                console.log(draggedElement);
             });
             cardElement.addEventListener('dragend', function () {
                 console.log('dragend');
+                this.remove();
             });
         }
-    },
-    addEventListenerToOtherCards: function(){
-        let cardElements = document.getElementsByClassName('card proman-card');
-        for (let cardElement of cardElements) {
-            cardElement.addEventListener('dragenter', function () {
+
+        for (const column of columns) {
+            column.addEventListener('dragenter', function () {
                 event.preventDefault();
                 console.log("dragenter");
             });
-            cardElement.addEventListener('dragleave', function () {
+            column.addEventListener('dragleave', function () {
                 event.preventDefault();
                 console.log("dragleave");
             });
-            cardElement.addEventListener('dragover', function () {
+            column.addEventListener('dragover', function () {
                 event.preventDefault();
                 console.log("dragover");
             });
-            cardElement.addEventListener('drop', function () {
-                console.log('dragdrop');
+            column.addEventListener('drop', function () {
                 event.preventDefault();
+                console.log("drop");
+                column.appendChild(draggedElement);
             });
         }
     }

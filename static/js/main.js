@@ -12,10 +12,8 @@ function init() {
     // put handler on new board button
     dom.addClickListener('#createNewBoard', dom.createNewBoard);
     // get registration form
-    //add dragula event listener to cards
-    let dragAndDropElements = dom.addEventListenerToCards();
-    // handle events
-    dom.handleDragulaEvents(dragAndDropElements);
+    //drag and drop event
+    dom.addEventListenerToCards();
 }
 
 init();
