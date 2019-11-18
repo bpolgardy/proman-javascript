@@ -247,15 +247,30 @@ export let dom = {
 
         });
         saveIcon.addEventListener('click', function (event) {
-
+            dom.saveNewCard(newCard, boardId, inputCardTitle)
         });
         dismissIcon.addEventListener('click', function (event) {
+            dom.dismissNewCard(newCard, boardId)
+        });
+    },
     addListenerToNewCardButton: function (boardId) {
         let newCardButton = document.querySelector(`#board-${boardId}`).querySelector('#newCardButton');
             newCardButton.addEventListener('click', function createNewCardHandler(event) {
                 event.target.removeEventListener('click', createNewCardHandler);
                 dom.insertNewCard(event, boardId);
-            });
         });
+    },
+    dismissNewCard: function (newCard, boardId) {
+        newCard.parentElement.remove();
+        dom.addListenerToNewCardButton(boardId)
+    },
+    saveNewCard: function (newCard, boardId, inputCardTitle) {
+        let cardData = newCard.dataset;
+            cardData['title'] = inputCardTitle.value;
+            dataHandler.createNewCard(cardData, function (response) {
+                newCard.parentElement.remove();
+                dom.showCard(response);
+                dom.addListenerToNewCardButton(boardId)
+            })
     }
 };
