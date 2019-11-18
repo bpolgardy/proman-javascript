@@ -116,6 +116,8 @@ def save_new_card(card_data):
             RETURNING id, board_id, title, status_id, "order", user_id;
             '''
     params = card_data
+    last_order = get_last_order_by_board_and_column(params['board_id'], params['status_id'])
+    params['order'] = last_order + 1 if last_order else 1
 
     return execute_query(query, params=params)
 
@@ -145,3 +147,14 @@ def get_cards_by_board_id(board_id):
 
     return execute_query(query, params=params)
 
+
+def get_last_order_by_board_and_column(board_id, status_id):
+    query = """
+            SELECT MAX("order") AS last_order
+            FROM cards
+            WHERE board_id=%(board_id)s AND status_id=%(status_id)s
+            """
+    params = {'board_id': board_id,
+              'status_id': status_id}
+
+    return execute_query(query, params=params)[0]['last_order']
