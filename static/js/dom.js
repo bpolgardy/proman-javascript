@@ -231,7 +231,7 @@ export let dom = {
 
         let newCard = dom.createCardElement(cardData);
         let cardContainer = document.querySelector(`#board-${cardData['board_id']}`).querySelector(`[data-col = '${cardData['status_id']}']`);
-        cardContainer.insertAdjacentHTML('beforeend', newCard);
+        cardContainer.insertAdjacentHTML('afterbegin', newCard);
         dom.addNewCardControl(cardContainer);
     },
     addNewCardControl: function(container) {
