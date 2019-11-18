@@ -152,6 +152,12 @@ def create_card():
         return data_handler.save_new_card(card_data)[0]
 
 
+@app.route('/boards/<int:board_id>/cards')
+@json_response
+def get_cards(board_id):
+    return data_handler.get_cards_by_board_id(board_id)
+
+
 def main():
     app.run(debug=True)
 
