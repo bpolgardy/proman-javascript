@@ -44,7 +44,7 @@ export let dom = {
 
         let creatNewBoardInput = document.querySelector('#createNewBoardTitle');
         let originalTitle = creatNewBoardInput.value;
-        creatNewBoardInput.focus();
+        creatNewBoardInput.select();
         creatNewBoardInput.addEventListener('keydown', function(event) {
             let key = event.key;
             if (key === 'Escape') {
@@ -216,7 +216,7 @@ export let dom = {
                         <div class="card" data-id="newCard" data-board_id="${cardData['board_id']}" data-status_id="${cardData['status_id']}">
                             <div class="card-dismiss d-flex justify-content-end mt-2 mr-2"><i class="far fa-save fa-lg p-2"></i><i class="fas fa-times fa-sm p-2"></i></div>
                             <div class="card-body float-left">
-                                <h5 class="card-title text-left text-align-top"><input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" value="New card"/></h5>
+                                <h5 class="card-title text-left text-align-top"><input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" placeholder="New card"/></h5>
                             </div>
                         </div>
                     </div>`;
