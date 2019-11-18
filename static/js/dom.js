@@ -244,7 +244,13 @@ export let dom = {
         inputCardTitle.focus();
 
         inputCardTitle.addEventListener('keydown', function (event) {
-
+            let key = event.key;
+            if (key === 'Escape') {
+                dom.dismissNewCard(newCard, boardId);
+            }
+            else if (key === 'Enter') {
+                dom.saveNewCard(newCard, boardId, inputCardTitle);
+            }
         });
         saveIcon.addEventListener('click', function (event) {
             dom.saveNewCard(newCard, boardId, inputCardTitle)
