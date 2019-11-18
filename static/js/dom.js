@@ -113,10 +113,7 @@ export let dom = {
         const renderedTemplate = compiledBoardsTemplate(board);
         document.getElementById('boardsContainer').insertAdjacentHTML('beforeend', renderedTemplate);
         dom.loadCards(board['id']);
-        document.querySelector(`#board-${board['id']}`).querySelector("#newCardButton").addEventListener('click', function createNewCardHandler(event) {
-            event.target.removeEventListener('click', createNewCardHandler);
-            dom.insertNewCard(event, board['id']);
-        });
+        dom.addListenerToNewCardButton(board['id'])
     },
 
     addBoardControls: function () {
@@ -253,9 +250,8 @@ export let dom = {
 
         });
         dismissIcon.addEventListener('click', function (event) {
-
-            newCard.remove();
-            let newCardButton = document.querySelector(`#board-${boardId}`).querySelector('#newCardButton');
+    addListenerToNewCardButton: function (boardId) {
+        let newCardButton = document.querySelector(`#board-${boardId}`).querySelector('#newCardButton');
             newCardButton.addEventListener('click', function createNewCardHandler(event) {
                 event.target.removeEventListener('click', createNewCardHandler);
                 dom.insertNewCard(event, boardId);
