@@ -56,7 +56,7 @@ export let dom = {
     },
     saveNewBoardTitle: function (event) {
         let boardTitle = {};
-        boardTitle['title'] = event.target.value;
+        boardTitle['title'] = event.target.value ? event.target.value : 'New board';
         dataHandler.createNewBoard(boardTitle, function (data) {
 
             document.getElementById('newBoard').remove();
@@ -265,7 +265,7 @@ export let dom = {
     },
     saveNewCard: function (newCard, boardId, inputCardTitle) {
         let cardData = newCard.dataset;
-            cardData['title'] = inputCardTitle.value;
+            cardData['title'] = inputCardTitle.value ? inputCardTitle.value : 'New card';
             dataHandler.createNewCard(cardData, function (response) {
                 newCard.parentElement.remove();
                 dom.showCard(response);
@@ -288,10 +288,11 @@ export let dom = {
             columns[i].ondrop = function (e) {
                 e.preventDefault();
                 let cardId = e.dataTransfer.getData("text/plain");
-                let cardContainer = document.getElementById(cardId).parentNode.cloneNode(true)
+                let cardContainer = document.getElementById(cardId).parentNode.cloneNode(true);
                 document.getElementById(cardId).parentNode.remove();
                 this.appendChild(cardContainer);
                 dom.addDragListener(document.getElementById(cardId));
+                dom.handleRenameCard(document.getElementById(cardId));
             };
 
             columns[i].ondragover = function (e) {
@@ -343,7 +344,7 @@ export let dom = {
                     this.blur();
                 }
                 else if (key === 'Enter') {
-                    let newTitle = this.value;
+                    let newTitle = this.value ? this.value : originalTitle;
                     cardNode.querySelector('.card-body').innerHTML = `<h5 class="card-title text-left text-align-top">${ newTitle }</h5>`;
                     dom.handleRenameCard(cardNode)
                     /* save new card and put back eventlistener */
@@ -353,7 +354,7 @@ export let dom = {
             cardTitleInput.addEventListener('blur', function blurListener () {
                 cardTitleInput.removeEventListener('click', blurListener);
                 cardTitle.innerText = originalTitle;
-                dom.handleRenameCard(cardNode)
+                dom.handleRenameCard(cardNode);
             });
         });
     },
