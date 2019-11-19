@@ -93,6 +93,7 @@ export let dom = {
         column.insertAdjacentHTML('beforeend', renderedTemplate);
         let newCard = document.getElementById("card-" + card.id);
         dom.addDragListener(newCard);
+        dom.handleRenameCard(newCard);
     },
     showBoard: function (board) {
         const boardTemplate = document.getElementById('board-template').innerHTML;
@@ -298,7 +299,6 @@ export let dom = {
             }
         }
     },
-
     addDragListener: function (card) {
         card.parentNode.ondragstart = function (e) {
             e.dataTransfer.setData('text/plain', card.id);
@@ -325,7 +325,36 @@ export let dom = {
             creatNewBoardInput.removeEventListener('blur', blurListener);
             dom.handleUnsavedTitle(originalTitle);
         });
-    }
+    },
+    handleRenameCard: function (cardNode) {
+        let cardTitle = cardNode.querySelector('h5');
 
+        cardTitle.addEventListener('click', function renameCard (event) {
+            cardTitle.removeEventListener('click', renameCard);
 
+            let originalTitle = cardTitle.innerText;
+            cardTitle.innerHTML = `<input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" value="${originalTitle}"/>`;
+
+            let cardTitleInput = cardTitle.firstChild;
+            cardTitleInput.select();
+            cardTitleInput.addEventListener('keyup', function (event) {
+                let key = event.key;
+                if (key === 'Escape') {
+                    this.blur();
+                }
+                else if (key === 'Enter') {
+                    let newTitle = this.value;
+                    cardNode.querySelector('.card-body').innerHTML = `<h5 class="card-title text-left text-align-top">${ newTitle }</h5>`;
+                    dom.handleRenameCard(cardNode)
+                    /* save new card and put back eventlistener */
+                }
+            });
+
+            cardTitleInput.addEventListener('blur', function blurListener () {
+                cardTitleInput.removeEventListener('click', blurListener);
+                cardTitle.innerText = originalTitle;
+                dom.handleRenameCard(cardNode)
+            });
+        });
+    },
 };
