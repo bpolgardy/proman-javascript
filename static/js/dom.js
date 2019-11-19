@@ -98,10 +98,12 @@ export let dom = {
         const compiledBoardsTemplate = Handlebars.compile(boardTemplate);
         const renderedTemplate = compiledBoardsTemplate(board);
         document.getElementById('boardsContainer').insertAdjacentHTML('beforeend', renderedTemplate);
+        let newBoard = document.getElementById("board-"+board.id);
         document.querySelector(`#board-${board['id']}`).querySelector("#newCardButton").addEventListener('click', function createNewCardHandler(event) {
             event.target.removeEventListener('click', createNewCardHandler);
             dom.insertNewCard(event, board['id']);
         });
+        dom.addDropListener(newBoard);
     },
 
     addBoardControls: function () {
@@ -243,5 +245,11 @@ export let dom = {
                 dom.insertNewCard(event, boardId);
             });
         });
+    },
+    addDropListener: function (board) {
+        board.addEventListener("drop", function (e) {
+            this.appendChild(e.dataTransfer.getData("obj"));
+        })
     }
+
 };
