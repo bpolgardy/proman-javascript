@@ -67,7 +67,6 @@ export let dom = {
     handleUnsavedTitle: function(originalTitle) {
         let titleInputContainer = document.getElementById('newBoard').querySelector('span');
         let titleContainer = document.getElementById('newBoard').querySelector('h5');
-        console.log(titleInputContainer);
         titleInputContainer.remove();
         titleContainer.innerHTML = originalTitle;
         dom.renameUnsavedBoard();
@@ -274,7 +273,8 @@ export let dom = {
     },
     renameUnsavedBoard: function() {
         let titleElem = document.getElementById('newBoard').querySelector('h5');
-        titleElem.addEventListener('click', function (event) {
+        titleElem.addEventListener('click', function renameListener() {
+            titleElem.removeEventListener('click', renameListener);
             titleElem.innerHTML = `<span class="d-flex w-50">
                                         <input id="createNewBoardTitle" class="input form-control" type="text" name="cardTitle" value="New board"/>
                                    </span>`;
@@ -310,20 +310,21 @@ export let dom = {
         let creatNewBoardInput = document.querySelector('#createNewBoardTitle');
         let originalTitle = creatNewBoardInput.value;
         creatNewBoardInput.select();
-        creatNewBoardInput.addEventListener('keydown', function(event) {
+        creatNewBoardInput.addEventListener('keyup', function(event) {
             let key = event.key;
             if (key === 'Escape') {
-                /*creatNewBoardInput.blur();*/
-                dom.handleUnsavedTitle(originalTitle);
+                creatNewBoardInput.blur();
+                /*dom.handleUnsavedTitle(originalTitle);*/
             }
 
             else if (key === 'Enter') {
                 dom.saveNewBoardTitle(event);
             }
         });
-        /*creatNewBoardInput.onblur = function blurListener () {
-                dom.handleUnsavedTitle(originalTitle);
-        }*/
+        creatNewBoardInput.addEventListener('blur', function blurListener () {
+            creatNewBoardInput.removeEventListener('blur', blurListener);
+            dom.handleUnsavedTitle(originalTitle);
+        });
     }
 
 
