@@ -135,3 +135,13 @@ def delete_board(id):
     """.format(id=util.escape_single_quotes(id))
     execute_query(query)
 
+
+def get_cards_by_board_id(board_id):
+    query = """
+            SELECT * FROM cards
+            WHERE board_id=%(id)s
+            """
+    params = {'id': board_id}
+
+    return execute_query(query, params=params)
+

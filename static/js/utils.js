@@ -7,7 +7,7 @@ export let utils = {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
             if (xhr.readyState == XMLHttpRequest.DONE) {
-                console.log(xhr.response);
+                // console.log(xhr.response);
                 sessionStorage.setItem("apiKey", xhr.response.toString());
             }
         };
