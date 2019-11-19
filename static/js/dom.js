@@ -172,7 +172,7 @@ export let dom = {
 
 
                     saveButton.textContent = ("save");
-                    saveButton.classList.add("btn");
+                    saveButton.classList.add("btn", "btn-info");
                     saveButton.addEventListener("click", function (e) {
                         e.stopPropagation();
                         let id = boards[i].id.substr(6);
@@ -182,8 +182,9 @@ export let dom = {
                     });
 
                     newTitle.value = originaltitleDisplay.textContent;
-                    newTitle.classList.add("col");
-                    newTitle.style.maxWidth = "20%";
+                    newTitle.classList.add("col", "input", "form-control","mr-2");
+                    newTitle.focus();
+                    /*newTitle.style.maxWidth = "40%";*/
 
                     span.classList.add("d-flex");
                     span.classList.add("w-50");
@@ -284,7 +285,7 @@ export let dom = {
         let columns = board.getElementsByClassName("proman-status");
         for (let i = 0; i < columns.length; i++) {
             columns[i].ondrop = function (e) {
-                event.preventDefault();
+                e.preventDefault();
                 let cardId = e.dataTransfer.getData("text/plain");
                 let cardContainer = document.getElementById(cardId).parentNode.cloneNode(true)
                 document.getElementById(cardId).parentNode.remove();
@@ -293,7 +294,7 @@ export let dom = {
             };
 
             columns[i].ondragover = function (e) {
-                event.preventDefault();
+                e.preventDefault();
             }
         }
     },
