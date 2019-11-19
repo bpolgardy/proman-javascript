@@ -23,7 +23,7 @@ export let dom = {
             dom.showBoard(board);
         }
     },
-    createNewBoard: function(event) {
+    createNewBoard: function() {
         let newBoard =
             `<div id="newBoard" class="shadow-sm card mb-4">
                 <div class="card-header">
@@ -41,22 +41,7 @@ export let dom = {
 
         document.querySelector('#boardsContainer').insertAdjacentHTML('beforeend', newBoard);
         dom.addClickListener('#dismissButton', dom.dismissNewBoard);
-
-        let creatNewBoardInput = document.querySelector('#createNewBoardTitle');
-        let originalTitle = creatNewBoardInput.value;
-        creatNewBoardInput.select();
-        creatNewBoardInput.addEventListener('keydown', function(event) {
-            let key = event.key;
-            if (key === 'Escape') {
-                dom.handleUnsavedTitle(event, originalTitle);
-            }
-            else if (key === 'Enter') {
-                dom.saveNewBoardTitle(event);
-            }
-        });
-        creatNewBoardInput.addEventListener('blur', function (event) {
-                dom.handleUnsavedTitle(event, originalTitle);
-        })
+        dom.handleNewBoardListeners();
     },
     addClickListener: function(selector, handler) {
         document.querySelector(selector).addEventListener('click', function eventHandler (event) {
@@ -78,13 +63,13 @@ export let dom = {
             dom.addClickListener('#createNewBoard', dom.createNewBoard);
         });
     },
-    handleUnsavedTitle: function(event, originalTitle) {
-        let titleInput = event.target;
-        let inputParent = titleInput.parentElement;
-        let titleContainer = inputParent.parentElement;
-
-        inputParent.remove();
-        titleContainer.innerHTML = originalTitle
+    handleUnsavedTitle: function(originalTitle) {
+        let titleInputContainer = document.getElementById('newBoard').querySelector('span');
+        let titleContainer = document.getElementById('newBoard').querySelector('h5');
+        console.log(titleInputContainer);
+        titleInputContainer.remove();
+        titleContainer.innerHTML = originalTitle;
+        dom.renameUnsavedBoard();
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
@@ -178,7 +163,7 @@ export let dom = {
                     let text = originaltitleDisplay.textContent;
                     let newTitle = document.createElement("input");
                     let span = document.createElement("span");
-                    let saveButton = document.createElement("button")
+                    let saveButton = document.createElement("button");
 
 
                     saveButton.textContent = ("save");
@@ -278,5 +263,34 @@ export let dom = {
                 dom.showCard(response);
                 dom.addListenerToNewCardButton(boardId)
             })
+    },
+    renameUnsavedBoard: function() {
+        let titleElem = document.getElementById('newBoard').querySelector('h5');
+        titleElem.addEventListener('click', function (event) {
+            titleElem.innerHTML = `<span class="d-flex w-50">
+                                        <input id="createNewBoardTitle" class="input form-control" type="text" name="cardTitle" value="New board"/>
+                                   </span>`;
+            dom.handleNewBoardListeners();
+        });
+
+    },
+    handleNewBoardListeners: function () {
+        let creatNewBoardInput = document.querySelector('#createNewBoardTitle');
+        let originalTitle = creatNewBoardInput.value;
+        creatNewBoardInput.select();
+        creatNewBoardInput.addEventListener('keydown', function(event) {
+            let key = event.key;
+            if (key === 'Escape') {
+                /*creatNewBoardInput.blur();*/
+                dom.handleUnsavedTitle(originalTitle);
+            }
+
+            else if (key === 'Enter') {
+                dom.saveNewBoardTitle(event);
+            }
+        });
+        /*creatNewBoardInput.onblur = function blurListener () {
+                dom.handleUnsavedTitle(originalTitle);
+        }*/
     }
 };
