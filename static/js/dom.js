@@ -10,6 +10,7 @@ export let dom = {
         // retrieves boards and makes showBoards called
         dataHandler.getBoards(function(boards){
             dom.showBoards(boards);
+            dom.addClickListener('#createNewBoard', dom.createNewBoard);
             dom.initRenameHandler();
             dom.addDeleteHandler();
             dom.addBoardControls();
