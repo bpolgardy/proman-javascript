@@ -8,7 +8,7 @@ export let dom = {
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
-        dataHandler.getBoards(function(boards){
+        dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
             dom.addClickListener('#createNewBoard', dom.createNewBoard);
             dom.initRenameHandler();
@@ -20,7 +20,7 @@ export let dom = {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
 
-        for(const board of boards){
+        for (const board of boards) {
             dom.showBoard(board);
         }
     },
@@ -44,20 +44,20 @@ export let dom = {
         dom.addClickListener('#dismissButton', dom.dismissNewBoard);
         dom.handleNewBoardListeners();
     },
-    addClickListener: function(selector, handler) {
-        document.querySelector(selector).addEventListener('click', function eventHandler (event) {
+    addClickListener: function (selector, handler) {
+        document.querySelector(selector).addEventListener('click', function eventHandler(event) {
             handler(event);
             event.target.removeEventListener('click', eventHandler);
         })
     },
-    dismissNewBoard: function(event) {
+    dismissNewBoard: function (event) {
         document.getElementById('newBoard').remove();
         dom.addClickListener('#createNewBoard', dom.createNewBoard)
     },
-    saveNewBoardTitle: function(event) {
+    saveNewBoardTitle: function (event) {
         let boardTitle = {};
         boardTitle['title'] = event.target.value;
-        dataHandler.createNewBoard(boardTitle, function(data) {
+        dataHandler.createNewBoard(boardTitle, function (data) {
 
             document.getElementById('newBoard').remove();
             dom.showBoard(data);
@@ -76,7 +76,7 @@ export let dom = {
         // retrieves cards and makes showCards called
         dataHandler.getCardsByBoardId(boardId, function (cards) {
             dom.showCards(cards)
-            })
+        })
     },
     showCards: function (cards) {
         // shows the cards of a board
@@ -85,38 +85,42 @@ export let dom = {
             dom.showCard(card);
         }
     },
-    showCard: function(card) {
+    showCard: function (card) {
         let cardTemplate = document.getElementById('card-template').innerHTML;
         let compiledCardTemplate = Handlebars.compile(cardTemplate);
         let renderedTemplate = compiledCardTemplate(card);
         let board = document.getElementById(`board-${card['board_id']}`);
         let column = board.querySelector(`[data-col="${card['status_id']}"]`);
         column.insertAdjacentHTML('beforeend', renderedTemplate);
+        let newCard = document.getElementById("card-" + card.id);
+        dom.addDragListener(newCard);
     },
     showBoard: function (board) {
         const boardTemplate = document.getElementById('board-template').innerHTML;
         const compiledBoardsTemplate = Handlebars.compile(boardTemplate);
         const renderedTemplate = compiledBoardsTemplate(board);
         document.getElementById('boardsContainer').insertAdjacentHTML('beforeend', renderedTemplate);
+        let newBoard = document.getElementById("board-" + board.id);
         dom.loadCards(board['id']);
-        dom.addListenerToNewCardButton(board['id'])
+        dom.addListenerToNewCardButton(board['id']);
+        dom.addDropListener(newBoard);
     },
 
     addBoardControls: function () {
         const boardControls = document.querySelectorAll('#dropdown-control');
-        utils.addEventListenerTo(boardControls, 'click', function(event) {
-        const clickedElementChildren = event.target.childNodes;
-        let chevron;
-        let target = event.target;
+        utils.addEventListenerTo(boardControls, 'click', function (event) {
+            const clickedElementChildren = event.target.childNodes;
+            let chevron;
+            let target = event.target;
 
-        if (utils.isEmpty(clickedElementChildren)) {
-            chevron = event.target.classList[1];
-        } else {
-            chevron = clickedElementChildren[1].classList[1];
-            target = target.querySelector('#chevron');
-        }
+            if (utils.isEmpty(clickedElementChildren)) {
+                chevron = event.target.classList[1];
+            } else {
+                chevron = clickedElementChildren[1].classList[1];
+                target = target.querySelector('#chevron');
+            }
 
-        if (chevron === 'fa-chevron-down') {
+            if (chevron === 'fa-chevron-down') {
                 target.classList.remove('fa-chevron-down');
                 target.classList.add('fa-chevron-up');
             } else {
@@ -197,7 +201,7 @@ export let dom = {
         }
     },
 
-    createCardElement: function(cardData) {
+    createCardElement: function (cardData) {
         let card = `<div class="card-container proman-card">
                         <div class="card" data-id="newCard" data-board_id="${cardData['board_id']}" data-status_id="${cardData['status_id']}">
                             <div class="card-dismiss d-flex justify-content-end mt-2 mr-2"><i class="far fa-save fa-lg p-2"></i><i class="fas fa-times fa-sm p-2"></i></div>
@@ -209,18 +213,20 @@ export let dom = {
         return card
     },
 
-    insertNewCard: function(event, boardId) {
-        let cardData = {'title': 'New card',
-                        'board_id': boardId,
-                        'status_id': 1,
-                        'order': 1};
+    insertNewCard: function (event, boardId) {
+        let cardData = {
+            'title': 'New card',
+            'board_id': boardId,
+            'status_id': 1,
+            'order': 1
+        };
 
         let newCard = dom.createCardElement(cardData);
         let cardContainer = document.querySelector(`#board-${cardData['board_id']}`).querySelector(`[data-col = '${cardData['status_id']}']`);
         cardContainer.insertAdjacentHTML('afterbegin', newCard);
         dom.addNewCardControl(cardContainer);
     },
-    addNewCardControl: function(container) {
+    addNewCardControl: function (container) {
         let newCard = container.querySelector('[data-id = "newCard"]');
         let inputCardTitle = newCard.querySelector('#createNewCardTitle');
         let saveIcon = newCard.querySelector('.fa-save');
@@ -273,6 +279,30 @@ export let dom = {
                                    </span>`;
             dom.handleNewBoardListeners();
         });
+    },
+    addDropListener: function (board) {
+        let columns = board.getElementsByClassName("proman-status");
+        for (let i = 0; i < columns.length; i++) {
+            columns[i].ondrop = function (e) {
+                event.preventDefault();
+                let cardId = e.dataTransfer.getData("text/plain");
+                let cardContainer = document.getElementById(cardId).parentNode.cloneNode(true)
+                document.getElementById(cardId).parentNode.remove();
+                this.appendChild(cardContainer);
+                dom.addDragListener(document.getElementById(cardId));
+            };
+
+            columns[i].ondragover = function (e) {
+                event.preventDefault();
+            }
+        }
+    },
+
+    addDragListener: function (card) {
+        card.parentNode.ondragstart = function (e) {
+            e.dataTransfer.setData('text/plain', card.id);
+        };
+
 
     },
     handleNewBoardListeners: function () {
@@ -294,4 +324,6 @@ export let dom = {
                 dom.handleUnsavedTitle(originalTitle);
         }*/
     }
+
+
 };
