@@ -183,7 +183,6 @@ export let dom = {
 
                     newTitle.value = originaltitleDisplay.textContent;
                     newTitle.classList.add("col", "input", "form-control","mr-2");
-                    newTitle.focus();
                     /*newTitle.style.maxWidth = "40%";*/
 
                     span.classList.add("d-flex");
@@ -196,6 +195,7 @@ export let dom = {
                     originaltitleDisplay.textContent = "";
                     originaltitleDisplay.append(span);
                     span.append(saveButton);
+                    newTitle.focus();
                     // document.getElementById(boards[i].id + "-title").remove();
                 }
             });
