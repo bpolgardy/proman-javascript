@@ -97,6 +97,17 @@ export let dataHandler = {
         this._api_post("/update-board/"+ parseInt(id), update, (response) => {
             return response;
         });
+    },
+
+    updateCard: function (cardId, boardId, order) {
+        let update = {
+            "boardId": boardId,
+            "order": order,
+            "api_key": sessionStorage.getItem("api_key")
+        };
+        this._api_post("/update-card"+parseInt(cardId), update, (response) => {
+            return response;
+        })
     }
 
 };

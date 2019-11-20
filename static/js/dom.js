@@ -287,10 +287,16 @@ export let dom = {
             columns[i].ondrop = function (e) {
                 e.preventDefault();
                 let cardId = e.dataTransfer.getData("text/plain");
-                let cardContainer = document.getElementById(cardId).parentNode.cloneNode(true)
+                let cardContainer = document.getElementById(cardId).parentNode.cloneNode(true);
+
                 document.getElementById(cardId).parentNode.remove();
                 this.appendChild(cardContainer);
                 dom.addDragListener(document.getElementById(cardId));
+
+                // updates the card data
+                let targetColumnCards = cardContainer.parentNode.children;
+                let columnCardOrder = dom.getColumnCardOrder(targetColumnCards);
+                dataHandler.updateCard(cardId, board.id, columnCardOrder);
             };
 
             columns[i].ondragover = function (e) {
@@ -303,9 +309,17 @@ export let dom = {
         card.parentNode.ondragstart = function (e) {
             e.dataTransfer.setData('text/plain', card.id);
         };
-
-
     },
+
+    getColumnCardOrder: function(cardElements) {
+        let orderListByCardId = [];
+        for (let cardElement of cardElements) {
+            let childNodeId = cardElement.firstChild.nextSibling.id;
+            orderListByCardId.push(childNodeId);
+        }
+        return orderListByCardId;
+    },
+
     handleNewBoardListeners: function () {
         let creatNewBoardInput = document.querySelector('#createNewBoardTitle');
         let originalTitle = creatNewBoardInput.value;
