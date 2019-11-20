@@ -127,7 +127,8 @@ def execute_query(cursor, query, params=None):
     cursor.execute(query, params)
 
     if query.strip().startswith('SELECT') \
-            or (query.strip().startswith('INSERT') and 'RETURNING' in query):
+            or (query.strip().startswith('INSERT') and 'RETURNING' in query)\
+            or (query.strip().startswith('UPDATE') and 'RETURNING' in query):
         return cursor.fetchall()
 
 
@@ -158,3 +159,17 @@ def get_last_order_by_board_and_column(board_id, status_id):
               'status_id': status_id}
 
     return execute_query(query, params=params)[0]['last_order']
+
+
+def update_card_title(card_id, title):
+    query = """
+            UPDATE cards
+            SET title = %(title)s
+            WHERE id = %(card_id)s
+            RETURNING title;
+            """
+
+    params = {'card_id': card_id,
+              'title': title}
+
+    return execute_query(query, params=params)[0]

@@ -346,8 +346,11 @@ export let dom = {
                 else if (key === 'Enter') {
                     let newTitle = this.value ? this.value : originalTitle;
                     cardNode.querySelector('.card-body').innerHTML = `<h5 class="card-title text-left text-align-top">${ newTitle }</h5>`;
-                    dom.handleRenameCard(cardNode)
-                    /* save new card and put back eventlistener */
+                    let card_id = cardNode.dataset.id;
+                    let data = {'title': newTitle};
+                    dataHandler.updateCard(card_id, data, function(json) {
+                        dom.handleRenameCard(cardNode);
+                    });
                 }
             });
 
