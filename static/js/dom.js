@@ -296,7 +296,10 @@ export let dom = {
                 // updates the card data
                 let targetColumnCards = cardContainer.parentNode.children;
                 let columnCardOrder = dom.getColumnCardOrder(targetColumnCards);
-                dataHandler.updateCard(cardId, board.id, columnCardOrder);
+                let cardHTML = document.getElementById(`${cardId}`);
+                let cardIdNumber = cardHTML.getAttribute('data-id');
+                let columnIdNumber = cardContainer.parentElement.getAttribute('data-col');
+                dataHandler.updateCard(cardIdNumber, columnIdNumber, columnCardOrder);
             };
 
             columns[i].ondragover = function (e) {
@@ -314,7 +317,7 @@ export let dom = {
     getColumnCardOrder: function(cardElements) {
         let orderListByCardId = [];
         for (let cardElement of cardElements) {
-            let childNodeId = cardElement.firstChild.nextSibling.id;
+            let childNodeId = cardElement.firstChild.nextSibling.getAttribute('data-id');
             orderListByCardId.push(childNodeId);
         }
         return orderListByCardId;

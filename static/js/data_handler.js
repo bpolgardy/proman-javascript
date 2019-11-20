@@ -99,13 +99,13 @@ export let dataHandler = {
         });
     },
 
-    updateCard: function (cardId, boardId, order) {
+    updateCard: function (cardId, columnId, order) {
         let update = {
-            "boardId": boardId,
+            "columnId": columnId,
             "order": order,
             "api_key": sessionStorage.getItem("api_key")
         };
-        this._api_post("/update-card"+parseInt(cardId), update, (response) => {
+        this._api_post("/update-card/"+parseInt(cardId), update, (response) => {
             return response;
         })
     }

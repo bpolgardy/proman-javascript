@@ -158,3 +158,12 @@ def get_last_order_by_board_and_column(board_id, status_id):
               'status_id': status_id}
 
     return execute_query(query, params=params)[0]['last_order']
+
+
+def update_cards(card_data_for_update):
+    for counter in range(len(card_data_for_update['order'])):
+        card_order = counter + 1
+        card_id = card_data_for_update['order'][counter]
+        update.update_card_data_for_column(int(card_data_for_update['columnId']),
+                                           card_id,
+                                           card_order)

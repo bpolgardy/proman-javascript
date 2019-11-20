@@ -158,11 +158,12 @@ def get_cards(board_id):
     return data_handler.get_cards_by_board_id(board_id)
 
 
-@app.route('/update-cards/<card_id>')
+@app.route('/update-card/<int:card_id>', methods=['GET', 'POST'])
 @json_response
-def update_cards():
-    data_for_update = request.get_json(force=True)
-    print(data_for_update)
+def update_cards(card_id):
+    card_data_for_update = request.get_json(force=True)
+    data_handler.update_cards(card_data_for_update)
+    return True
 
 
 def main():
