@@ -111,9 +111,9 @@ def save_new_board(board_data):
 
 def save_new_card(card_data):
     query = '''
-            INSERT INTO cards (id, board_id, title, status_id, "order", user_id)
-            VALUES (DEFAULT, %(board_id)s, %(title)s, %(status_id)s, %(order)s, %(user_id)s)
-            RETURNING id, board_id, title, status_id, "order", user_id;
+            INSERT INTO cards (id, board_id, title, status_id, "order", user_id, archive)
+            VALUES (DEFAULT, %(board_id)s, %(title)s, %(status_id)s, %(order)s, %(user_id)s, DEFAULT)
+            RETURNING id, board_id, title, status_id, "order", user_id, archive;
             '''
     params = card_data
     last_order = get_last_order_by_board_and_column(params['board_id'], params['status_id'])

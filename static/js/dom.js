@@ -205,9 +205,13 @@ export let dom = {
     createCardElement: function (cardData) {
         let card = `<div class="card-container proman-card">
                         <div class="card" data-id="newCard" data-board_id="${cardData['board_id']}" data-status_id="${cardData['status_id']}">
-                            <div class="card-dismiss d-flex justify-content-end mt-2 mr-2"><i class="far fa-save fa-lg p-2"></i><i class="fas fa-times fa-sm p-2"></i></div>
+                            <div class="card-dismiss d-flex justify-content-end mt-2 mr-2">
+                                <i class="far fa-save fa-lg p-2"></i><i class="fas fa-times fa-sm p-2"></i>
+                            </div>
                             <div class="card-body float-left">
-                                <h5 class="card-title text-left text-align-top"><input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" placeholder="New card"/></h5>
+                                <h5 class="card-title text-left text-align-top">
+                                    <input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" placeholder="New card"/>
+                                </h5>
                             </div>
                         </div>
                     </div>`;
@@ -219,11 +223,11 @@ export let dom = {
             'title': 'New card',
             'board_id': boardId,
             'status_id': 1,
-            'order': 1
         };
 
         let newCard = dom.createCardElement(cardData);
-        let cardContainer = document.querySelector(`#board-${cardData['board_id']}`).querySelector(`[data-col = '${cardData['status_id']}']`);
+        let cardContainer = document.querySelector(`#board-${cardData['board_id']}`)
+            .querySelector(`[data-col = '${cardData['status_id']}']`);
         cardContainer.insertAdjacentHTML('afterbegin', newCard);
         dom.addNewCardControl(cardContainer);
     },
@@ -334,7 +338,8 @@ export let dom = {
             cardTitle.removeEventListener('click', renameCard);
 
             let originalTitle = cardTitle.innerText;
-            cardTitle.innerHTML = `<input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" value="${originalTitle}"/>`;
+            cardTitle.innerHTML =
+                `<input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" value="${originalTitle}"/>`;
 
             let cardTitleInput = cardTitle.firstChild;
             cardTitleInput.select();
@@ -345,7 +350,8 @@ export let dom = {
                 }
                 else if (key === 'Enter') {
                     let newTitle = this.value ? this.value : originalTitle;
-                    cardNode.querySelector('.card-body').innerHTML = `<h5 class="card-title text-left text-align-top">${ newTitle }</h5>`;
+                    cardNode.querySelector('.card-body').innerHTML =
+                        `<h5 class="card-title text-left text-align-top">${ newTitle }</h5>`;
                     let card_id = cardNode.dataset.id;
                     let data = {'title': newTitle};
                     dataHandler.updateCard(card_id, data, function(json) {
