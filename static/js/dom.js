@@ -343,6 +343,4 @@ export let dom = {
             dom.handleUnsavedTitle(originalTitle);
         });
     }
-
-
 };
