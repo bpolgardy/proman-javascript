@@ -139,13 +139,14 @@ def delete_board(id):
     execute_query(query)
 
 
-def get_cards_by_board_id(board_id):
+def get_cards_by_board_id(board_id, archive=False):
     query = """
             SELECT * FROM cards
             WHERE board_id=%(id)s
-                AND archive=false;
+                AND archive=%(archive)s;
             """
-    params = {'id': board_id}
+    params = {'id': board_id,
+              'archive': archive}
 
     return execute_query(query, params=params)
 
