@@ -94,6 +94,7 @@ export let dom = {
         let newCard = document.getElementById("card-" + card.id);
         dom.addDragListener(newCard);
         dom.handleRenameCard(newCard);
+        dom.handleArchiveCard(newCard);
     },
     showBoard: function (board) {
         const boardTemplate = document.getElementById('board-template').innerHTML;
@@ -257,7 +258,8 @@ export let dom = {
         });
     },
     addListenerToNewCardButton: function (boardId) {
-        let newCardButton = document.querySelector(`#board-${boardId}`).querySelector('#newCardButton');
+        let newCardButton = document.querySelector(`#board-${boardId}`)
+            .querySelector('#newCardButton');
             newCardButton.addEventListener('click', function createNewCardHandler(event) {
                 event.target.removeEventListener('click', createNewCardHandler);
                 dom.insertNewCard(event, boardId);
@@ -367,4 +369,18 @@ export let dom = {
             });
         });
     },
+    handleArchiveCard: function (newCard) {
+        let archiveButton = newCard.querySelector('i');
+        archiveButton.addEventListener('click', function(event) {
+            let clickedButton = event.target;
+            let cardClicked = clickedButton.parentElement.parentElement;
+            let clickedCardContainer = cardClicked.parentElement;
+            let cardId = cardClicked.dataset.id;
+            let archiveData = {'archive': true};
+
+            dataHandler.updateCard(cardId, archiveData, function () {
+                clickedCardContainer.remove();
+            });
+        });
+    }
 };

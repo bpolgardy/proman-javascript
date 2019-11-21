@@ -143,6 +143,7 @@ def get_cards_by_board_id(board_id):
     query = """
             SELECT * FROM cards
             WHERE board_id=%(id)s
+                AND archive=false;
             """
     params = {'id': board_id}
 
@@ -173,3 +174,16 @@ def update_card_title(card_id, title):
               'title': title}
 
     return execute_query(query, params=params)[0]
+
+
+def update_card_archive_status(card_id, archive):
+    query = """
+            UPDATE cards
+            SET archive = %(archive)s
+            WHERE id = %(card_id)s
+            RETURNING archive;
+            """
+    params = {'card_id': card_id,
+              'archive': archive}
+
+    return execute_query(query, params=params)

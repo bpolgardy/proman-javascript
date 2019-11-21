@@ -163,8 +163,12 @@ def get_cards(board_id):
 def handle_card(card_id):
     if request.method == 'PATCH':
         update_data = request.get_json(force=True)
-        title = update_data['title']
-        return data_handler.update_card_title(card_id, title)
+        if 'title' in update_data.keys() and len(update_data.keys()) == 1:
+            title = update_data['title']
+            return data_handler.update_card_title(card_id, title)
+        elif 'archive' in update_data.keys() and len(update_data.keys()) == 1:
+            archive = update_data['archive']
+            return data_handler.update_card_archive_status(card_id, archive)
 
 
 def main():

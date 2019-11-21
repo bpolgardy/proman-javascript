@@ -118,6 +118,7 @@ export let dataHandler = {
             callback(json);
             return json
         })
-    }
+    },
+    
 
 };
