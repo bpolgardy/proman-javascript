@@ -103,7 +103,7 @@ export let dataHandler = {
         })
     },
 
-    updateBoard: function (id, boardId, title) {
+    updateBoard: function (id, title) {
         let update = {
             "title": title,
             "api_key": sessionStorage.getItem("api_key")

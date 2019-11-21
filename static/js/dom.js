@@ -11,11 +11,9 @@ export let dom = {
         dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
             dom.addClickListener('#createNewBoard', dom.createNewBoard);
-            dom.initRenameHandler();
-            dom.addDeleteHandler();
-            dom.addBoardControls();
         });
     },
+
     showBoards: function (boards) {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
@@ -24,6 +22,7 @@ export let dom = {
             dom.showBoard(board);
         }
     },
+
     createNewBoard: function() {
         let newBoard =
             `<div id="newBoard" class="shadow-sm card mb-4">
@@ -104,11 +103,14 @@ export let dom = {
         dom.loadCards(board['id']);
         dom.addListenerToNewCardButton(board['id']);
         dom.addDropListener(newBoard);
+        dom.initRenameHandler(board['id']);
+        dom.addDeleteHandler(board['id']);
+        dom.addBoardControls(board['id']);
     },
 
-    addBoardControls: function () {
-        const boardControls = document.querySelectorAll('#dropdown-control');
-        utils.addEventListenerTo(boardControls, 'click', function (event) {
+    addBoardControls: function (boardId) {
+        const boardControl = document.querySelectorAll(`#board-${boardId} #dropdown-control`);
+        utils.addEventListenerTo(boardControl, 'click', function (event) {
             const clickedElementChildren = event.target.childNodes;
             let chevron;
             let target = event.target;
@@ -132,74 +134,63 @@ export let dom = {
     },
 
 
-    addDeleteHandler: function () {
-        let deletButtons = document.getElementsByClassName("delete-button");
-        for (let i = 0; i < deletButtons.length; i++) {
-            let deletButton = deletButtons[i];
-            deletButton.addEventListener("click", function (e) {
+    addDeleteHandler: function (boardId) {
+        let deleteButtonForBoardId = document.querySelector(`#board-${boardId} .delete-button`);
+            deleteButtonForBoardId.addEventListener("click", function (e) {
                 e.stopPropagation();
-                let boardId = deletButton.dataset.board;
-                let board = deletButton.dataset.boardName;
+                let boardId = deleteButtonForBoardId.dataset.board;
+                let board = deleteButtonForBoardId.dataset.boardName;
                 dataHandler.deleteBoard(boardId);
                 document.getElementById(board).remove();
-
-            })
-        }
+        })
     },
 
-    initRenameHandler: function () {
-        let boards = document.getElementsByClassName("promanBoard");
-
-        // let boards = document.getElementsByClassName("promanBoard")[0].getElementsByTagName("h5");
-
-
+    initRenameHandler: function (boardId) {
         function saveBoardName(id, boardId) {
 
         }
 
-        for (let i = 0; i < boards.length; i++) {
-            let h5 = boards[i].getElementsByTagName("H5")[0];
-            let done = true;
-            h5.addEventListener('click', function (e) {
-                if (done) {
-                    done = false;
+        let board = document.getElementById("board-" + boardId);
+        let h5 = board.getElementsByTagName("H5")[0];
+        let done = true;
+        h5.addEventListener('click', function (e) {
+            if (done) {
+                done = false;
+                e.stopPropagation();
+                let originaltitleDisplay = board.getElementsByTagName("H5")[0];
+                let text = originaltitleDisplay.textContent;
+                let newTitle = document.createElement("input");
+                let span = document.createElement("span");
+                let saveButton = document.createElement("button");
+
+
+                saveButton.textContent = ("save");
+                saveButton.classList.add("btn", "btn-info");
+                saveButton.addEventListener("click", function (e) {
                     e.stopPropagation();
-                    let originaltitleDisplay = boards[i].getElementsByTagName("H5")[0];
-                    let text = originaltitleDisplay.textContent;
-                    let newTitle = document.createElement("input");
-                    let span = document.createElement("span");
-                    let saveButton = document.createElement("button");
+                    dataHandler.updateBoard(boardId, newTitle.value);
+                    h5.innerHTML = newTitle.value;
+                    done = true;
+                });
 
+                newTitle.value = originaltitleDisplay.textContent;
+                newTitle.classList.add("col", "input", "form-control", "mr-2");
+                /*newTitle.style.maxWidth = "40%";*/
 
-                    saveButton.textContent = ("save");
-                    saveButton.classList.add("btn", "btn-info");
-                    saveButton.addEventListener("click", function (e) {
-                        e.stopPropagation();
-                        let id = boards[i].id.substr(6);
-                        dataHandler.updateBoard(id, boards[i].id, newTitle.value);
-                        h5.innerHTML = newTitle.value;
-                        done = true;
-                    });
+                span.classList.add("d-flex");
+                span.classList.add("w-50");
+                span.style.width = "100%";
+                span.id = "keksz";
 
-                    newTitle.value = originaltitleDisplay.textContent;
-                    newTitle.classList.add("col", "input", "form-control","mr-2");
-                    /*newTitle.style.maxWidth = "40%";*/
-
-                    span.classList.add("d-flex");
-                    span.classList.add("w-50");
-                    span.style.width = "100%";
-                    span.id = "keksz";
-
-                    span.appendChild(newTitle);
-                    boards[i].firstElementChild.firstElementChild.insertAdjacentElement("afterbegin", span);
-                    originaltitleDisplay.textContent = "";
-                    originaltitleDisplay.append(span);
-                    span.append(saveButton);
-                    newTitle.focus();
-                    // document.getElementById(boards[i].id + "-title").remove();
-                }
-            });
-        }
+                span.appendChild(newTitle);
+                board.firstElementChild.firstElementChild.insertAdjacentElement("afterbegin", span);
+                originaltitleDisplay.textContent = "";
+                originaltitleDisplay.append(span);
+                span.append(saveButton);
+                newTitle.focus();
+                // document.getElementById(boards[i].id + "-title").remove();
+            }
+        });
     },
 
     createCardElement: function (cardData) {
@@ -268,7 +259,7 @@ export let dom = {
             cardData['title'] = inputCardTitle.value ? inputCardTitle.value : 'New card';
             dataHandler.createNewCard(cardData, function (response) {
                 newCard.parentElement.remove();
-                dom.showCard(response);
+                dom.Card(response);
                 dom.addListenerToNewCardButton(boardId)
             })
     },
