@@ -93,6 +93,7 @@ export let dom = {
         column.insertAdjacentHTML('beforeend', renderedTemplate);
         let newCard = document.getElementById("card-" + card.id);
         dom.addDragListener(newCard);
+        dom.addHighLightClickListener(newCard);
     },
     showBoard: function (board) {
         const boardTemplate = document.getElementById('board-template').innerHTML;
@@ -292,6 +293,7 @@ export let dom = {
                 document.getElementById(cardId).parentNode.remove();
                 this.appendChild(cardContainer);
                 dom.addDragListener(document.getElementById(cardId));
+                dom.addHighLightClickListener(document.getElementById(cardId));
 
                 // updates the card data
                 let targetColumnCards = cardContainer.parentNode.children;
@@ -314,10 +316,38 @@ export let dom = {
         };
     },
 
+    addHighLightClickListener: function(card) {
+        card.addEventListener('click', function () {
+            if (card.style.backgroundColor === 'rgb(8, 252, 0)'){
+                card.style.backgroundColor = 'initial';
+            }
+            else {
+                // if the "highlighter cards" container does not exist
+                card.style.backgroundColor = '#08FC00';
+                console.log(card.parentElement);
+                if (String(card.parentElement.className) !== "highlighted-cards" && document.getElementsByClassName('highlighterd-cards')) {
+                    let cardParent = card.parentElement;
+                    let wrapper = document.createElement("div");
+                    wrapper.className = 'highlighted-cards';
+                    cardParent.appendChild(wrapper);
+                    console.log(cardParent);
+                    wrapper.appendChild(card);
+                }
+                // if the "highlighter cards" container exist
+                else{
+                    console.log('exist')
+                    let highlighterCardContainer = document.getElementsByClassName('highlighterd-cards');
+                    highlighterCardContainer.appendChild(card.parentElement);
+                }
+            }
+        });
+    },
+
     getColumnCardOrder: function(cardElements) {
         let orderListByCardId = [];
         for (let cardElement of cardElements) {
-            let childNodeId = cardElement.firstChild.nextSibling.getAttribute('data-id');
+            let cardData = cardElement.getElementsByClassName('card');
+            let childNodeId = cardData['0'].getAttribute('data-id');
             orderListByCardId.push(childNodeId);
         }
         return orderListByCardId;
