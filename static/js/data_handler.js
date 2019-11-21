@@ -119,6 +119,11 @@ export let dataHandler = {
             return json
         })
     },
-    
+    getArchivedCardsByBoardId: function (boardId, callback) {
+        this._api_patch(`boards/${boardId}/cards?archive=True`, function (json) {
+            callback(json);
+            return json
+        })
+    }
 
 };

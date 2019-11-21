@@ -155,7 +155,10 @@ def create_card():
 @app.route('/boards/<int:board_id>/cards')
 @json_response
 def get_cards(board_id):
-    return data_handler.get_cards_by_board_id(board_id)
+    if request.args.get('archive'):
+        data_handler.get_cards_by_board_id(board_id, request.args.get('archive'))
+    else:
+        return data_handler.get_cards_by_board_id(board_id)
 
 
 @app.route('/cards/<int:card_id>', methods=['GET', 'POST', 'PATCH'])
