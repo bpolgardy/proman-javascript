@@ -34,6 +34,20 @@ export let dataHandler = {
         return json;
         });
     },
+    _api_patch: function(url, data, callback) {
+        return fetch(url, {
+            method: 'PATCH',
+            credentials: "same-origin",
+            body: JSON.stringify(data)
+        })
+            .then(function(response) {
+                return response.json();
+        })
+            .then(function (json) {
+                callback(json);
+                return json;
+            })
+    },
     init: function () {
     },
     getBoards: function (callback) {
@@ -99,7 +113,7 @@ export let dataHandler = {
         });
     },
 
-    updateCard: function (cardId, columnId, order) {
+    updateCardStatusAndOrder: function (cardId, columnId, order) {
         let update = {
             "columnId": columnId,
             "order": order,
@@ -107,6 +121,13 @@ export let dataHandler = {
         };
         this._api_post("/update-card/"+parseInt(cardId), update, (response) => {
             return response;
+        })
+    },
+
+    updateCardTitle: function (card_id, data, callback) {
+        this._api_patch(`/cards/${card_id}`, data, function (json) {
+            callback(json);
+            return json
         })
     }
 

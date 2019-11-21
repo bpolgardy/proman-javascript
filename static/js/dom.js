@@ -56,7 +56,7 @@ export let dom = {
     },
     saveNewBoardTitle: function (event) {
         let boardTitle = {};
-        boardTitle['title'] = event.target.value;
+        boardTitle['title'] = event.target.value ? event.target.value : 'New board';
         dataHandler.createNewBoard(boardTitle, function (data) {
 
             document.getElementById('newBoard').remove();
@@ -93,6 +93,7 @@ export let dom = {
         column.insertAdjacentHTML('beforeend', renderedTemplate);
         let newCard = document.getElementById("card-" + card.id);
         dom.addDragListener(newCard);
+        dom.handleRenameCard(newCard);
     },
     showBoard: function (board) {
         const boardTemplate = document.getElementById('board-template').innerHTML;
@@ -264,7 +265,7 @@ export let dom = {
     },
     saveNewCard: function (newCard, boardId, inputCardTitle) {
         let cardData = newCard.dataset;
-            cardData['title'] = inputCardTitle.value;
+            cardData['title'] = inputCardTitle.value ? inputCardTitle.value : 'New card';
             dataHandler.createNewCard(cardData, function (response) {
                 newCard.parentElement.remove();
                 dom.showCard(response);
@@ -288,10 +289,10 @@ export let dom = {
                 e.preventDefault();
                 let cardId = e.dataTransfer.getData("text/plain");
                 let cardContainer = document.getElementById(cardId).parentNode.cloneNode(true);
-
                 document.getElementById(cardId).parentNode.remove();
                 this.appendChild(cardContainer);
                 dom.addDragListener(document.getElementById(cardId));
+                dom.handleRenameCard(document.getElementById(cardId));
 
                 // updates the card data (insert into another function)
                 let targetColumnCards = cardContainer.parentNode.children;
@@ -300,7 +301,7 @@ export let dom = {
                 let cardIdNumber = cardHTML.getAttribute('data-id');
                 let columnIdNumber = cardContainer.parentElement.getAttribute('data-col');
                 dom.updateCardHtml(columnIdNumber, columnCardOrder);
-                dataHandler.updateCard(cardIdNumber, columnIdNumber, columnCardOrder);
+                dataHandler.updateCardStatusAndOrder(cardIdNumber, columnIdNumber, columnCardOrder);
             };
 
             columns[i].ondragover = function (e) {
@@ -318,8 +319,7 @@ export let dom = {
     },
 
     addDragListener: function (card) {
-        let cardContainer = card.parentNode;
-        cardContainer.ondragstart = function (e) {
+        card.parentNode.ondragstart = function (e) {
             e.dataTransfer.setData('text/plain', card.id);
         };
     },
@@ -353,5 +353,40 @@ export let dom = {
             creatNewBoardInput.removeEventListener('blur', blurListener);
             dom.handleUnsavedTitle(originalTitle);
         });
-    }
+    },
+
+    handleRenameCard: function (cardNode) {
+        let cardTitle = cardNode.querySelector('h5');
+
+        cardTitle.addEventListener('click', function renameCard (event) {
+            cardTitle.removeEventListener('click', renameCard);
+
+            let originalTitle = cardTitle.innerText;
+            cardTitle.innerHTML = `<input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" value="${originalTitle}"/>`;
+
+            let cardTitleInput = cardTitle.firstChild;
+            cardTitleInput.select();
+            cardTitleInput.addEventListener('keyup', function (event) {
+                let key = event.key;
+                if (key === 'Escape') {
+                    this.blur();
+                }
+                else if (key === 'Enter') {
+                    let newTitle = this.value ? this.value : originalTitle;
+                    cardNode.querySelector('.card-body').innerHTML = `<h5 class="card-title text-left text-align-top">${ newTitle }</h5>`;
+                    let card_id = cardNode.dataset.id;
+                    let data = {'title': newTitle};
+                    dataHandler.updateCardTitle(card_id, data, function(json) {
+                        dom.handleRenameCard(cardNode);
+                    });
+                }
+            });
+
+            cardTitleInput.addEventListener('blur', function blurListener () {
+                cardTitleInput.removeEventListener('click', blurListener);
+                cardTitle.innerText = originalTitle;
+                dom.handleRenameCard(cardNode);
+            });
+        });
+    },
 };

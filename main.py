@@ -167,6 +167,15 @@ def update_cards(card_id):
     return True
 
 
+@app.route('/cards/<int:card_id>', methods=['GET', 'POST', 'PATCH'])
+@json_response
+def handle_card(card_id):
+    if request.method == 'PATCH':
+        update_data = request.get_json(force=True)
+        title = update_data['title']
+        return data_handler.update_card_title(card_id, title)
+
+
 def main():
     app.run(debug=True)
 
