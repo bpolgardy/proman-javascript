@@ -217,3 +217,23 @@ def get_board_id_by_card_id(card_id):
     params = {'card_id': card_id}
 
     return execute_query(query, params=params)[0]['board_id']
+
+
+def update_cards(card_data_for_update):
+    for counter in range(len(card_data_for_update['order'])):
+        card_order = counter + 1
+        card_id = card_data_for_update['order'][counter]
+        update.update_card_data_for_column(int(card_data_for_update['columnId']),
+                                           card_id,
+                                           card_order)
+
+
+def update_drag_starting_point_column(card_id):
+    column_of_card_id = select.get_column_of_card_id(card_id)
+    card_list_for_column = select.get_card_list_for_column(column_of_card_id)
+
+    if card_list_for_column:
+        for card_order, card in enumerate(card_list_for_column):
+            update.update_card_order(card['id'], card_order)
+
+    return column_of_card_id

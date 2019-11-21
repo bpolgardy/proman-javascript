@@ -1,6 +1,6 @@
 // It uses data_handler.js to visualize elements
-import { dataHandler } from "./data_handler.js";
-import { utils } from "./utils.js";
+import {dataHandler} from "./data_handler.js";
+import {utils} from "./utils.js";
 
 export let dom = {
     init: function () {
@@ -65,7 +65,7 @@ export let dom = {
             dom.addClickListener('#createNewBoard', dom.createNewBoard);
         });
     },
-    handleUnsavedTitle: function(originalTitle) {
+    handleUnsavedTitle: function (originalTitle) {
         let titleInputContainer = document.getElementById('newBoard').querySelector('span');
         let titleContainer = document.getElementById('newBoard').querySelector('h5');
         titleInputContainer.remove();
@@ -94,6 +94,7 @@ export let dom = {
         column.insertAdjacentHTML('beforeend', renderedTemplate);
         let newCard = document.getElementById("card-" + card.id);
         dom.addDragListener(newCard);
+        dom.addDragOverCardHandler(newCard, dom.createPlaceholder());
         dom.handleRenameCard(newCard);
         dom.handleArchiveCard(newCard);
     },
@@ -184,7 +185,7 @@ export let dom = {
                     });
 
                     newTitle.value = originaltitleDisplay.textContent;
-                    newTitle.classList.add("col", "input", "form-control","mr-2");
+                    newTitle.classList.add("col", "input", "form-control", "mr-2");
                     /*newTitle.style.maxWidth = "40%";*/
 
                     span.classList.add("d-flex");
@@ -246,8 +247,7 @@ export let dom = {
             let key = event.key;
             if (key === 'Escape') {
                 dom.dismissNewCard(newCard, boardId);
-            }
-            else if (key === 'Enter') {
+            } else if (key === 'Enter') {
                 dom.saveNewCard(newCard, boardId, inputCardTitle);
             }
         });
@@ -261,9 +261,9 @@ export let dom = {
     addListenerToNewCardButton: function (boardId) {
         let newCardButton = document.querySelector(`#board-${boardId}`)
             .querySelector('#newCardButton');
-            newCardButton.addEventListener('click', function createNewCardHandler(event) {
-                event.target.removeEventListener('click', createNewCardHandler);
-                dom.insertNewCard(event, boardId);
+        newCardButton.addEventListener('click', function createNewCardHandler(event) {
+            event.target.removeEventListener('click', createNewCardHandler);
+            dom.insertNewCard(event, boardId);
         });
     },
     dismissNewCard: function (newCard, boardId) {
@@ -272,14 +272,14 @@ export let dom = {
     },
     saveNewCard: function (newCard, boardId, inputCardTitle) {
         let cardData = newCard.dataset;
-            cardData['title'] = inputCardTitle.value ? inputCardTitle.value : 'New card';
-            dataHandler.createNewCard(cardData, function (response) {
-                newCard.parentElement.remove();
-                dom.showCard(response);
-                dom.addListenerToNewCardButton(boardId)
-            })
+        cardData['title'] = inputCardTitle.value ? inputCardTitle.value : 'New card';
+        dataHandler.createNewCard(cardData, function (response) {
+            newCard.parentElement.remove();
+            dom.showCard(response);
+            dom.addListenerToNewCardButton(boardId)
+        })
     },
-    renameUnsavedBoard: function() {
+    renameUnsavedBoard: function () {
         let titleElem = document.getElementById('newBoard').querySelector('h5');
         titleElem.addEventListener('click', function renameListener() {
             titleElem.removeEventListener('click', renameListener);
@@ -289,6 +289,7 @@ export let dom = {
             dom.handleNewBoardListeners();
         });
     },
+
     addDropListener: function (board) {
         let columns = board.getElementsByClassName("proman-status");
         for (let i = 0; i < columns.length; i++) {
@@ -297,10 +298,29 @@ export let dom = {
                 let cardId = e.dataTransfer.getData("text/plain");
                 let cardContainer = document.getElementById(cardId).parentNode.cloneNode(true);
                 document.getElementById(cardId).parentNode.remove();
-                this.appendChild(cardContainer);
-                dom.addDragListener(document.getElementById(cardId));
+                try {
+                    this.insertBefore(cardContainer, document.getElementsByClassName("placeholder")[0]);
+                } catch (e) {
+                    this.appendChild(cardContainer);
+                }
+                // console.log(document.getElementsByClassName("placeholder"));
+                let card = document.getElementById(cardId);
+                let index = Array.from(cardContainer.parentNode.children).indexOf(cardContainer);
+                card.dataset.status_id = this.dataset.col;
+                card.dataset.order = index.toString();
+                dom.addDragListener(card);
                 dom.handleRenameCard(document.getElementById(cardId));
                 dom.handleArchiveCard(document.getElementById(cardId));
+                dom.addDragOverCardHandler(card, dom.createPlaceholder());
+                dom.removePlaceholders();
+                dataHandler.updateCardStatusAndOrder(card.dataset.id, this.dataset.col, dom.getCardOrder(this));
+            };
+
+            columns[i].ondragleave = function (e) {
+                e.preventDefault();
+                if (!this.contains(e.target)) {
+                    dom.removePlaceholders();
+                }
             };
 
             columns[i].ondragover = function (e) {
@@ -308,36 +328,74 @@ export let dom = {
             }
         }
     },
+
+    getCardOrder: function (obj){
+       let orederedIds = [];
+       let cards = obj.getElementsByClassName("proman-card");
+       console.log(cards);
+       for (let i =0; i < cards.length; i++){
+           console.log(cards[i].dataset);
+           orederedIds.push(cards[i].dataset.id);
+       }
+       // console.log(orederedIds);
+       return orederedIds
+    },
+
     addDragListener: function (card) {
         card.parentNode.ondragstart = function (e) {
             e.dataTransfer.setData('text/plain', card.id);
         };
+    },
 
+    addDragOverCardHandler: function (card, placeHolder) {
+        card.ondragenter = function (e) {
+            // dom.insertAfter(placeHolder, card.parentNode);
+            dom.insertAfter(dom.createPlaceholder(), card.parentNode);
+        };
+        placeHolder.ondragleave = function (e) {
+            e.preventDefault();
+            dom.removePlaceholders();
+            this.remove();
+        };
+    },
 
+    insertAfter: function (newNode, referenceNode) {
+        referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+    },
+
+    createPlaceholder: function () {
+        // console.log("calling clenup");
+        dom.removePlaceholders();
+
+        let placeHolder = document.createElement("div");
+        placeHolder.style.height = "100px";
+        placeHolder.style.width = "auto";
+        placeHolder.classList.add("placeholder");
+
+        return placeHolder;
     },
     handleNewBoardListeners: function () {
         let creatNewBoardInput = document.querySelector('#createNewBoardTitle');
         let originalTitle = creatNewBoardInput.value;
         creatNewBoardInput.select();
-        creatNewBoardInput.addEventListener('keyup', function(event) {
+        creatNewBoardInput.addEventListener('keyup', function (event) {
             let key = event.key;
             if (key === 'Escape') {
                 creatNewBoardInput.blur();
-            }
-
-            else if (key === 'Enter') {
+            } else if (key === 'Enter') {
                 dom.saveNewBoardTitle(event);
             }
         });
-        creatNewBoardInput.addEventListener('blur', function blurListener () {
+        creatNewBoardInput.addEventListener('blur', function blurListener() {
             creatNewBoardInput.removeEventListener('blur', blurListener);
             dom.handleUnsavedTitle(originalTitle);
         });
     },
+
     handleRenameCard: function (cardNode) {
         let cardTitle = cardNode.querySelector('h5');
 
-        cardTitle.addEventListener('click', function renameCard (event) {
+        cardTitle.addEventListener('click', function renameCard(event) {
             cardTitle.removeEventListener('click', renameCard);
 
             let originalTitle = cardTitle.innerText;
@@ -350,26 +408,34 @@ export let dom = {
                 let key = event.key;
                 if (key === 'Escape') {
                     this.blur();
-                }
-                else if (key === 'Enter') {
+                } else if (key === 'Enter') {
                     let newTitle = this.value ? this.value : originalTitle;
+                    cardNode.querySelector('.card-body').innerHTML = `<h5 class="card-title text-left text-align-top">${newTitle}</h5>`;
                     cardNode.querySelector('.card-body').innerHTML =
                         `<h5 class="card-title text-left text-align-top">${ newTitle }</h5>`;
                     let card_id = cardNode.dataset.id;
                     let data = {'title': newTitle};
-                    dataHandler.updateCard(card_id, data, function(json) {
+                    dataHandler.updateCardTitle(card_id, data, function (json) {
                         dom.handleRenameCard(cardNode);
                     });
                 }
             });
 
-            cardTitleInput.addEventListener('blur', function blurListener () {
+            cardTitleInput.addEventListener('blur', function blurListener() {
                 cardTitleInput.removeEventListener('click', blurListener);
                 cardTitle.innerText = originalTitle;
                 dom.handleRenameCard(cardNode);
             });
         });
     },
+    removePlaceholders: function () {
+        // console.log("cleanup called");
+        let placeholders = document.getElementsByClassName("placeholder");
+        for (let i = 0; i < placeholders.length; i++) {
+            placeholders[i].remove();
+            // console.log("removed placholder: #" + placeholders.length )
+        }
+    }
     handleArchiveCard: function (newCard) {
         let archiveButton = newCard.querySelector('i');
         archiveButton.addEventListener('click', function(event) {
