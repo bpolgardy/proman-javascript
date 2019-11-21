@@ -23,6 +23,7 @@ export let dom = {
         for (const board of boards) {
             dom.showBoard(board);
         }
+        dom.handleArchiveCardModal();
     },
     createNewBoard: function() {
         let newBoard =
@@ -299,6 +300,7 @@ export let dom = {
                 this.appendChild(cardContainer);
                 dom.addDragListener(document.getElementById(cardId));
                 dom.handleRenameCard(document.getElementById(cardId));
+                dom.handleArchiveCard(document.getElementById(cardId));
             };
 
             columns[i].ondragover = function (e) {
@@ -321,7 +323,6 @@ export let dom = {
             let key = event.key;
             if (key === 'Escape') {
                 creatNewBoardInput.blur();
-                /*dom.handleUnsavedTitle(originalTitle);*/
             }
 
             else if (key === 'Enter') {
@@ -382,5 +383,34 @@ export let dom = {
                 clickedCardContainer.remove();
             });
         });
-    }
+    },
+    handleArchiveCardModal: function () {
+        $('#archivedCards').on('show.bs.modal', function (event) {
+            let targetButton = event.relatedTarget;
+            let boardId = targetButton.dataset.board_id;
+            dataHandler.getArchivedCardsByBoardId(boardId, function(json) {
+                let rows = '';
+                for (let card of json) {
+                    rows +=
+                        `<tr><td>${card.title}</td><td><button class="btn btn-outline-secondary restore" data-card_id="${card.id}" data-card_status="${card.status_id}">Restore</button></td></tr>`
+                }
+                document.querySelector('#archivedCards tbody').innerHTML = rows;
+                let restoreButtons = document.querySelectorAll('#archivedCards .restore');
+                for (let button of restoreButtons) {
+                    button.addEventListener('click', function(event) {
+                       let targetedRestore = event.target;
+                       let cardId = targetedRestore.dataset.card_id;
+                       let status = targetedRestore.dataset.card_status;
+                       let cardData = {'archive': false,
+                                       'status': status};
+                       dataHandler.updateCard(cardId, cardData, function(json) {
+                           if (json) {
+                               dom.showCard(json);
+                           }
+                       })
+                    })
+                }
+            })
+        })
+    },
 };

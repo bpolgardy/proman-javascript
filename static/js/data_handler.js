@@ -120,7 +120,7 @@ export let dataHandler = {
         })
     },
     getArchivedCardsByBoardId: function (boardId, callback) {
-        this._api_patch(`boards/${boardId}/cards?archive=True`, function (json) {
+        this._api_get(`boards/${boardId}/cards?archive=True`, function (json) {
             callback(json);
             return json
         })

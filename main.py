@@ -156,7 +156,7 @@ def create_card():
 @json_response
 def get_cards(board_id):
     if request.args.get('archive'):
-        data_handler.get_cards_by_board_id(board_id, request.args.get('archive'))
+        return data_handler.get_cards_by_board_id(board_id, request.args.get('archive'))
     else:
         return data_handler.get_cards_by_board_id(board_id)
 
@@ -165,13 +165,21 @@ def get_cards(board_id):
 @json_response
 def handle_card(card_id):
     if request.method == 'PATCH':
-        update_data = request.get_json(force=True)
-        if 'title' in update_data.keys() and len(update_data.keys()) == 1:
-            title = update_data['title']
+        updated_data = request.get_json(force=True)
+        updated_data_keys = updated_data.keys()
+
+        if 'title' in updated_data_keys and len(updated_data_keys) == 1:
+            title = updated_data['title']
             return data_handler.update_card_title(card_id, title)
-        elif 'archive' in update_data.keys() and len(update_data.keys()) == 1:
-            archive = update_data['archive']
+
+        elif 'archive' in updated_data_keys and len(updated_data_keys) == 1:
+            archive = updated_data['archive']
             return data_handler.update_card_archive_status(card_id, archive)
+
+        elif 'archive' in updated_data_keys and 'status' in updated_data_keys:
+            archive = updated_data['archive']
+            status_id = updated_data['status']
+            return data_handler.update_card_archive_status(card_id, archive, status_id)
 
 
 def main():

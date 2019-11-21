@@ -160,7 +160,10 @@ def get_last_order_by_board_and_column(board_id, status_id):
     params = {'board_id': board_id,
               'status_id': status_id}
 
-    return execute_query(query, params=params)[0]['last_order']
+    result = execute_query(query, params=params)[0]
+    last_order = result['last_order'] if result else 0
+
+    return last_order
 
 
 def update_card_title(card_id, title):
@@ -177,14 +180,40 @@ def update_card_title(card_id, title):
     return execute_query(query, params=params)[0]
 
 
-def update_card_archive_status(card_id, archive):
-    query = """
-            UPDATE cards
-            SET archive = %(archive)s
-            WHERE id = %(card_id)s
-            RETURNING archive;
-            """
-    params = {'card_id': card_id,
-              'archive': archive}
+def update_card_archive_status(card_id, archive, status_id=None):
+    if status_id:
+        query = """
+                UPDATE cards
+                SET archive = %(archive)s, "order" = %(order)s
+                WHERE id = %(card_id)s
+                RETURNING id, board_id, title, status_id;
+                """
+        board_id = get_board_id_by_card_id(card_id)
 
-    return execute_query(query, params=params)
+        params = {'card_id': card_id,
+                  'archive': archive,
+                  'order': get_last_order_by_board_and_column(board_id, status_id) + 1}
+
+    else:
+        query = """
+                UPDATE cards
+                SET archive = %(archive)s
+                WHERE id = %(card_id)s
+                RETURNING id, board_id, title, status_id;
+                """
+        params = {'card_id': card_id,
+                  'archive': archive}
+
+    return execute_query(query, params=params)[0]
+
+
+def get_board_id_by_card_id(card_id):
+
+    query = '''
+            SELECT board_id
+            FROM cards
+            WHERE id = %(card_id)s;
+            '''
+    params = {'card_id': card_id}
+
+    return execute_query(query, params=params)[0]['board_id']
