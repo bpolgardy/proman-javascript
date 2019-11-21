@@ -313,7 +313,8 @@ export let dom = {
 
     addDragOverCardHandler: function (card, placeHolder) {
         card.ondragenter = function (e) {
-            dom.insertAfter(placeHolder, card.parentNode);
+            // dom.insertAfter(placeHolder, card.parentNode);
+            dom.insertAfter(dom.createPlaceholder(), card.parentNode);
         };
         placeHolder.ondragleave = function (e) {
             e.preventDefault();
@@ -327,7 +328,7 @@ export let dom = {
     },
 
     createPlaceholder: function () {
-        console.log("calling clenup");
+        // console.log("calling clenup");
         dom.removePlaceholders();
 
         let placeHolder = document.createElement("div");
@@ -339,12 +340,11 @@ export let dom = {
     },
 
     removePlaceholders: function () {
-        console.log("cleanup called");
+        // console.log("cleanup called");
         let placeholders = document.getElementsByClassName("placeholder");
         for (let i = 0; i < placeholders.length; i++){
             placeholders[i].remove();
-            console.log("removed placholder: #" + placeholders.length )
+            // console.log("removed placholder: #" + placeholders.length )
         }
     }
-}
-;
+};
