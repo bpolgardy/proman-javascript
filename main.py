@@ -162,6 +162,7 @@ def get_cards(board_id):
 @json_response
 def update_cards(card_id):
     card_data_for_update = request.get_json(force=True)
+    data_handler.update_drag_starting_point_column(card_id)
     data_handler.update_cards(card_data_for_update)
     return True
 

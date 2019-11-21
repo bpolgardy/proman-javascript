@@ -62,3 +62,26 @@ def hashed_password_for(cursor, username):
     user_data = cursor.fetchone()
     if user_data:
         return user_data['password']
+
+
+@connection.connection_handler
+def get_column_of_card_id(cursor, card_id):
+    cursor.execute("""
+                    SELECT status_id
+                    FROM cards
+                    WHERE id = %(card_id)s
+                    """, {'card_id': card_id})
+    column_id = cursor.fetchone()
+    column_id = column_id['status_id']
+    return column_id
+
+
+@connection.connection_handler
+def get_card_list_for_column(cursor, column_id):
+    cursor.execute("""
+                    SELECT id
+                    FROM cards
+                    WHERE status_id = %(column_id)s
+                    """, {'column_id': column_id})
+    card_list_for_column = cursor.fetchall()
+    return card_list_for_column

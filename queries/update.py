@@ -23,3 +23,11 @@ def update_card_data_for_column(cursor, column_id, card_id, card_order):
                     WHERE id = %(card_id)s;
                     """,
                    {'column_id': column_id, 'card_id': card_id, 'card_order': card_order})
+
+
+@connection.connection_handler
+def update_card_order(cursor, card_id, updated_order):
+    cursor.execute("""
+                    UPDATE cards
+                    SET "order" = %(updated_order)s
+                    """, {'updated_order': updated_order})
