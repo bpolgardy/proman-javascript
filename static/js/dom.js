@@ -10,7 +10,6 @@ export let dom = {
         // retrieves boards and makes showBoards called
         dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
-            dom.addClickListener('#createNewBoard', dom.createNewBoard);
             dom.initRenameHandler();
             dom.addDeleteHandler();
             dom.addBoardControls();
@@ -23,6 +22,7 @@ export let dom = {
         for (const board of boards) {
             dom.showBoard(board);
         }
+        dom.addClickListener('#createNewBoard', dom.createNewBoard);
         dom.handleArchiveCardModal();
     },
     createNewBoard: function() {
@@ -406,6 +406,8 @@ export let dom = {
                        dataHandler.updateCard(cardId, cardData, function(json) {
                            if (json) {
                                dom.showCard(json);
+                               let restoredRow = targetedRestore.parentElement.parentElement;
+                               restoredRow.remove();
                            }
                        })
                     })
