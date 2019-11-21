@@ -283,11 +283,13 @@ export let dom = {
                     this.appendChild(cardContainer);
                 }
                 // console.log(document.getElementsByClassName("placeholder"));
-                document.getElementById(cardId).dataset.status_id = this.dataset.col;
-                let card = document.getElementById(cardId);
+                let card =document.getElementById(cardId);
+                let index = Array.from(cardContainer.parentNode.children).indexOf(cardContainer);
+                card.dataset.status_id = this.dataset.col;
+                card.dataset.order = index.toString();
                 dom.addDragListener(card);
                 dom.addDragOverCardHandler(card, dom.createPlaceholder());
-                // dom.removePlaceholders();
+                dom.removePlaceholders();
             };
 
             columns[i].ondragleave = function(e){
