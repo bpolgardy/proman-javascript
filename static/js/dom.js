@@ -107,6 +107,7 @@ export let dom = {
         column.insertAdjacentHTML('beforeend', renderedTemplate);
         let newCard = document.getElementById("card-" + card.id);
         dom.addDragListener(newCard);
+        dom.addDragOverCardHandler(newCard, dom.createPlaceholder());
     },
     showBoard: function (board) {
         const boardTemplate = document.getElementById('board-template').innerHTML;
@@ -267,6 +268,7 @@ export let dom = {
             });
         });
     },
+
     addDropListener: function (board) {
         let columns = board.getElementsByClassName("proman-status");
         for (let i = 0; i < columns.length; i++) {
@@ -275,8 +277,24 @@ export let dom = {
                 let cardId = e.dataTransfer.getData("text/plain");
                 let cardContainer = document.getElementById(cardId).parentNode.cloneNode(true)
                 document.getElementById(cardId).parentNode.remove();
-                this.appendChild(cardContainer);
-                dom.addDragListener(document.getElementById(cardId));
+                try {
+                    this.insertBefore(cardContainer, document.getElementsByClassName("placeholder")[0]);
+                } catch (e) {
+                    this.appendChild(cardContainer);
+                }
+                // console.log(document.getElementsByClassName("placeholder"));
+                document.getElementById(cardId).dataset.status_id = this.dataset.col;
+                let card = document.getElementById(cardId);
+                dom.addDragListener(card);
+                dom.addDragOverCardHandler(card, dom.createPlaceholder());
+                // dom.removePlaceholders();
+            };
+
+            columns[i].ondragleave = function(e){
+                e.preventDefault();
+                if (!this.contains(e.target)) {
+                    dom.removePlaceholders();
+                }
             };
 
             columns[i].ondragover = function (e) {
@@ -289,8 +307,42 @@ export let dom = {
         card.parentNode.ondragstart = function (e) {
             e.dataTransfer.setData('text/plain', card.id);
         };
+    },
 
+    addDragOverCardHandler: function (card, placeHolder) {
+        card.ondragenter = function (e) {
+            dom.insertAfter(placeHolder, card.parentNode);
+        };
+        placeHolder.ondragleave = function (e) {
+            e.preventDefault();
+            dom.removePlaceholders();
+            this.remove();
+        };
+    },
+
+    insertAfter: function (newNode, referenceNode) {
+        referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+    },
+
+    createPlaceholder: function () {
+        console.log("calling clenup");
+        dom.removePlaceholders();
+
+        let placeHolder = document.createElement("div");
+        placeHolder.style.height = "100px";
+        placeHolder.style.width = "auto";
+        placeHolder.classList.add("placeholder");
+
+        return placeHolder;
+    },
+
+    removePlaceholders: function () {
+        console.log("cleanup called");
+        let placeholders = document.getElementsByClassName("placeholder");
+        for (let i = 0; i < placeholders.length; i++){
+            placeholders[i].remove();
+            console.log("removed placholder: #" + placeholders.length )
+        }
     }
-
-
-};
+}
+;
