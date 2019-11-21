@@ -309,8 +309,8 @@ export let dom = {
                 card.dataset.status_id = this.dataset.col;
                 card.dataset.order = index.toString();
                 dom.addDragListener(card);
-                dom.handleRenameCard(document.getElementById(cardId));
-                dom.handleArchiveCard(document.getElementById(cardId));
+                dom.handleRenameCard(card);
+                dom.handleArchiveCard(card);
                 dom.addDragOverCardHandler(card, dom.createPlaceholder());
                 dom.removePlaceholders();
                 dataHandler.updateCardStatusAndOrder(card.dataset.id, this.dataset.col, dom.getCardOrder(this));
@@ -435,7 +435,7 @@ export let dom = {
             placeholders[i].remove();
             // console.log("removed placholder: #" + placeholders.length )
         }
-    }
+    },
     handleArchiveCard: function (newCard) {
         let archiveButton = newCard.querySelector('i');
         archiveButton.addEventListener('click', function(event) {
@@ -445,7 +445,7 @@ export let dom = {
             let cardId = cardClicked.dataset.id;
             let archiveData = {'archive': true};
 
-            dataHandler.updateCard(cardId, archiveData, function () {
+            dataHandler.updateCardTitle(cardId, archiveData, function () {
                 clickedCardContainer.remove();
             });
         });
@@ -469,7 +469,7 @@ export let dom = {
                        let status = targetedRestore.dataset.card_status;
                        let cardData = {'archive': false,
                                        'status': status};
-                       dataHandler.updateCard(cardId, cardData, function(json) {
+                       dataHandler.updateCardTitle(cardId, cardData, function(json) {
                            if (json) {
                                dom.showCard(json);
                                let restoredRow = targetedRestore.parentElement.parentElement;
