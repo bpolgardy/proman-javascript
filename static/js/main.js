@@ -9,8 +9,6 @@ function init() {
     dom.init();
     // loads the boards to the screen
     dom.loadBoards();
-    // put handler on new board button
-    dom.addClickListener('#createNewBoard', dom.createNewBoard)
     // get registration form
 }
 

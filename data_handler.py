@@ -1,6 +1,6 @@
 import persistence
 import connection
-from queries import select, insert
+from queries import select, insert, update
 import util
 
 
@@ -116,6 +116,8 @@ def save_new_card(card_data):
             RETURNING id, board_id, title, status_id, "order", user_id;
             '''
     params = card_data
+    last_order = get_last_order_by_board_and_column(params['board_id'], params['status_id'])
+    params['order'] = last_order + 1 if last_order else 1
 
     return execute_query(query, params=params)
 
@@ -125,7 +127,8 @@ def execute_query(cursor, query, params=None):
     cursor.execute(query, params)
 
     if query.strip().startswith('SELECT') \
-            or (query.strip().startswith('INSERT') and 'RETURNING' in query):
+            or (query.strip().startswith('INSERT') and 'RETURNING' in query)\
+            or (query.strip().startswith('UPDATE') and 'RETURNING' in query):
         return cursor.fetchall()
 
 
@@ -145,3 +148,48 @@ def get_cards_by_board_id(board_id):
 
     return execute_query(query, params=params)
 
+
+def get_last_order_by_board_and_column(board_id, status_id):
+    query = """
+            SELECT MAX("order") AS last_order
+            FROM cards
+            WHERE board_id=%(board_id)s AND status_id=%(status_id)s
+            """
+    params = {'board_id': board_id,
+              'status_id': status_id}
+
+    return execute_query(query, params=params)[0]['last_order']
+
+
+def update_card_title(card_id, title):
+    query = """
+            UPDATE cards
+            SET title = %(title)s
+            WHERE id = %(card_id)s
+            RETURNING title;
+            """
+
+    params = {'card_id': card_id,
+              'title': title}
+
+    return execute_query(query, params=params)[0]
+
+
+def update_cards(card_data_for_update):
+    for counter in range(len(card_data_for_update['order'])):
+        card_order = counter + 1
+        card_id = card_data_for_update['order'][counter]
+        update.update_card_data_for_column(int(card_data_for_update['columnId']),
+                                           card_id,
+                                           card_order)
+
+
+def update_drag_starting_point_column(card_id):
+    column_of_card_id = select.get_column_of_card_id(card_id)
+    card_list_for_column = select.get_card_list_for_column(column_of_card_id)
+
+    if card_list_for_column:
+        for card_order, card in enumerate(card_list_for_column):
+            update.update_card_order(card['id'], card_order)
+
+    return column_of_card_id

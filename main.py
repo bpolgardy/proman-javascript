@@ -158,6 +158,24 @@ def get_cards(board_id):
     return data_handler.get_cards_by_board_id(board_id)
 
 
+@app.route('/update-card/<int:card_id>', methods=['GET', 'POST'])
+@json_response
+def update_cards(card_id):
+    card_data_for_update = request.get_json(force=True)
+    data_handler.update_drag_starting_point_column(card_id)
+    data_handler.update_cards(card_data_for_update)
+    return True
+
+
+@app.route('/cards/<int:card_id>', methods=['GET', 'POST', 'PATCH'])
+@json_response
+def handle_card(card_id):
+    if request.method == 'PATCH':
+        update_data = request.get_json(force=True)
+        title = update_data['title']
+        return data_handler.update_card_title(card_id, title)
+
+
 def main():
     app.run(debug=True)
 
