@@ -1,7 +1,9 @@
 <div class="container">
+    {% raw %}
     <div class="row">
         <div class="mb-3 ml-1">
-            <button id="newCardButton" type="button" class="btn btn-outline-secondary"><i class="fa fa-plus-circle"></i> New Card</button>
+            <button id="newCardButton" type="button" class="btn btn-outline-secondary mr-1"><i class="fa fa-plus-circle"></i> New Card</button>
+            <button id="archiveCardButton" type="button" class="btn btn-outline-secondary ml-1" data-board_id="{{ id }}" data-toggle="modal" data-target="#archivedCards"><i class="fa fa-archive"></i> Show archived cards</button>
         </div>
     </div>
     <div class="row">
@@ -43,4 +45,5 @@
             </div>
         </div>
     </div>
+    {% endraw %}
 </div>

@@ -129,6 +129,12 @@ export let dataHandler = {
             callback(json);
             return json
         })
+    },
+    getArchivedCardsByBoardId: function (boardId, callback) {
+        this._api_get(`boards/${boardId}/cards?archive=True`, function (json) {
+            callback(json);
+            return json
+        })
     }
 
 };

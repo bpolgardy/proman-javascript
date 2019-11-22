@@ -10,7 +10,6 @@ export let dom = {
         // retrieves boards and makes showBoards called
         dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
-            dom.addClickListener('#createNewBoard', dom.createNewBoard);
             dom.initRenameHandler();
             dom.addDeleteHandler();
             dom.addBoardControls();
@@ -23,6 +22,8 @@ export let dom = {
         for (const board of boards) {
             dom.showBoard(board);
         }
+        dom.addClickListener('#createNewBoard', dom.createNewBoard);
+        dom.handleArchiveCardModal();
     },
     createNewBoard: function() {
         let newBoard =
@@ -31,7 +32,7 @@ export let dom = {
                     <div class="row">
                         <h5 class="col pt-1 mr-5">
                             <span class="d-flex w-50">
-                                <input id="createNewBoardTitle" class="input form-control" type="text" name="cardTitle" value="New board"/>
+                                <input id="createNewBoardTitle" class="input form-control" type="text" name="cardTitle" value="New board" autocomplete="off"/>
                             </span>
                         </h5>
                         <button id="dismissButton" type="button" class="close col-auto text-right pl-3 pr-3 no-border btn ml-5" aria-label="Close">
@@ -95,6 +96,7 @@ export let dom = {
         dom.addDragListener(newCard);
         dom.addDragOverCardHandler(newCard, dom.createPlaceholder());
         dom.handleRenameCard(newCard);
+        dom.handleArchiveCard(newCard);
     },
     showBoard: function (board) {
         const boardTemplate = document.getElementById('board-template').innerHTML;
@@ -198,9 +200,13 @@ export let dom = {
     createCardElement: function (cardData) {
         let card = `<div class="card-container proman-card">
                         <div class="card" data-id="newCard" data-board_id="${cardData['board_id']}" data-status_id="${cardData['status_id']}">
-                            <div class="card-dismiss d-flex justify-content-end mt-2 mr-2"><i class="far fa-save fa-lg p-2"></i><i class="fas fa-times fa-sm p-2"></i></div>
+                            <div class="card-dismiss d-flex justify-content-end mt-2 mr-2">
+                                <i class="far fa-save fa-lg p-2"></i><i class="fas fa-times fa-sm p-2"></i>
+                            </div>
                             <div class="card-body float-left">
-                                <h5 class="card-title text-left text-align-top"><input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" placeholder="New card"/></h5>
+                                <h5 class="card-title text-left text-align-top">
+                                    <input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" placeholder="New card" autocomplete="off"/>
+                                </h5>
                             </div>
                         </div>
                     </div>`;
@@ -212,11 +218,11 @@ export let dom = {
             'title': 'New card',
             'board_id': boardId,
             'status_id': 1,
-            'order': 1
         };
 
         let newCard = dom.createCardElement(cardData);
-        let cardContainer = document.querySelector(`#board-${cardData['board_id']}`).querySelector(`[data-col = '${cardData['status_id']}']`);
+        let cardContainer = document.querySelector(`#board-${cardData['board_id']}`)
+            .querySelector(`[data-col = '${cardData['status_id']}']`);
         cardContainer.insertAdjacentHTML('afterbegin', newCard);
         dom.addNewCardControl(cardContainer);
     },
@@ -245,7 +251,8 @@ export let dom = {
         });
     },
     addListenerToNewCardButton: function (boardId) {
-        let newCardButton = document.querySelector(`#board-${boardId}`).querySelector('#newCardButton');
+        let newCardButton = document.querySelector(`#board-${boardId}`)
+            .querySelector('#newCardButton');
         newCardButton.addEventListener('click', function createNewCardHandler(event) {
             event.target.removeEventListener('click', createNewCardHandler);
             dom.insertNewCard(event, boardId);
@@ -269,7 +276,7 @@ export let dom = {
         titleElem.addEventListener('click', function renameListener() {
             titleElem.removeEventListener('click', renameListener);
             titleElem.innerHTML = `<span class="d-flex w-50">
-                                        <input id="createNewBoardTitle" class="input form-control" type="text" name="cardTitle" value="New board"/>
+                                        <input id="createNewBoardTitle" class="input form-control" type="text" name="cardTitle" value="New board" autocomplete="off"/>
                                    </span>`;
             dom.handleNewBoardListeners();
         });
@@ -294,6 +301,8 @@ export let dom = {
                 card.dataset.status_id = this.dataset.col;
                 card.dataset.order = index.toString();
                 dom.addDragListener(card);
+                dom.handleRenameCard(card);
+                dom.handleArchiveCard(card);
                 dom.addDragOverCardHandler(card, dom.createPlaceholder());
                 dom.removePlaceholders();
                 dataHandler.updateCardStatusAndOrder(card.dataset.id, this.dataset.col, dom.getCardOrder(this));
@@ -365,7 +374,6 @@ export let dom = {
             let key = event.key;
             if (key === 'Escape') {
                 creatNewBoardInput.blur();
-                /*dom.handleUnsavedTitle(originalTitle);*/
             } else if (key === 'Enter') {
                 dom.saveNewBoardTitle(event);
             }
@@ -383,7 +391,8 @@ export let dom = {
             cardTitle.removeEventListener('click', renameCard);
 
             let originalTitle = cardTitle.innerText;
-            cardTitle.innerHTML = `<input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" value="${originalTitle}"/>`;
+            cardTitle.innerHTML =
+                `<input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" value="${originalTitle}" autocomplete="off"/>`;
 
             let cardTitleInput = cardTitle.firstChild;
             cardTitleInput.select();
@@ -394,6 +403,8 @@ export let dom = {
                 } else if (key === 'Enter') {
                     let newTitle = this.value ? this.value : originalTitle;
                     cardNode.querySelector('.card-body').innerHTML = `<h5 class="card-title text-left text-align-top">${newTitle}</h5>`;
+                    cardNode.querySelector('.card-body').innerHTML =
+                        `<h5 class="card-title text-left text-align-top">${ newTitle }</h5>`;
                     let card_id = cardNode.dataset.id;
                     let data = {'title': newTitle};
                     dataHandler.updateCardTitle(card_id, data, function (json) {
@@ -416,5 +427,50 @@ export let dom = {
             placeholders[i].remove();
             // console.log("removed placholder: #" + placeholders.length )
         }
-    }
+    },
+    handleArchiveCard: function (newCard) {
+        let archiveButton = newCard.querySelector('i');
+        archiveButton.addEventListener('click', function(event) {
+            let clickedButton = event.target;
+            let cardClicked = clickedButton.parentElement.parentElement;
+            let clickedCardContainer = cardClicked.parentElement;
+            let cardId = cardClicked.dataset.id;
+            let archiveData = {'archive': true};
+
+            dataHandler.updateCardTitle(cardId, archiveData, function () {
+                clickedCardContainer.remove();
+            });
+        });
+    },
+    handleArchiveCardModal: function () {
+        $('#archivedCards').on('show.bs.modal', function (event) {
+            let targetButton = event.relatedTarget;
+            let boardId = targetButton.dataset.board_id;
+            dataHandler.getArchivedCardsByBoardId(boardId, function(json) {
+                let rows = '';
+                for (let card of json) {
+                    rows +=
+                        `<tr><td>${card.title}</td><td><button class="btn btn-outline-secondary restore" data-card_id="${card.id}" data-card_status="${card.status_id}">Restore</button></td></tr>`
+                }
+                document.querySelector('#archivedCards tbody').innerHTML = rows;
+                let restoreButtons = document.querySelectorAll('#archivedCards .restore');
+                for (let button of restoreButtons) {
+                    button.addEventListener('click', function(event) {
+                       let targetedRestore = event.target;
+                       let cardId = targetedRestore.dataset.card_id;
+                       let status = targetedRestore.dataset.card_status;
+                       let cardData = {'archive': false,
+                                       'status': status};
+                       dataHandler.updateCardTitle(cardId, cardData, function(json) {
+                           if (json) {
+                               dom.showCard(json);
+                               let restoredRow = targetedRestore.parentElement.parentElement;
+                               restoredRow.remove();
+                           }
+                       })
+                    })
+                }
+            })
+        })
+    },
 };
