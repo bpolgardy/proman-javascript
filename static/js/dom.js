@@ -32,7 +32,7 @@ export let dom = {
                     <div class="row">
                         <h5 class="col pt-1 mr-5">
                             <span class="d-flex w-50">
-                                <input id="createNewBoardTitle" class="input form-control" type="text" name="cardTitle" value="New board"/>
+                                <input id="createNewBoardTitle" class="input form-control" type="text" name="cardTitle" value="New board" autocomplete="off"/>
                             </span>
                         </h5>
                         <button id="dismissButton" type="button" class="close col-auto text-right pl-3 pr-3 no-border btn ml-5" aria-label="Close">
@@ -213,7 +213,7 @@ export let dom = {
                             </div>
                             <div class="card-body float-left">
                                 <h5 class="card-title text-left text-align-top">
-                                    <input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" placeholder="New card"/>
+                                    <input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" placeholder="New card" autocomplete="off"/>
                                 </h5>
                             </div>
                         </div>
@@ -284,7 +284,7 @@ export let dom = {
         titleElem.addEventListener('click', function renameListener() {
             titleElem.removeEventListener('click', renameListener);
             titleElem.innerHTML = `<span class="d-flex w-50">
-                                        <input id="createNewBoardTitle" class="input form-control" type="text" name="cardTitle" value="New board"/>
+                                        <input id="createNewBoardTitle" class="input form-control" type="text" name="cardTitle" value="New board" autocomplete="off"/>
                                    </span>`;
             dom.handleNewBoardListeners();
         });
@@ -400,7 +400,7 @@ export let dom = {
 
             let originalTitle = cardTitle.innerText;
             cardTitle.innerHTML =
-                `<input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" value="${originalTitle}"/>`;
+                `<input id="createNewCardTitle" class="form-control" type="text" name="cardTitle" value="${originalTitle}" autocomplete="off"/>`;
 
             let cardTitleInput = cardTitle.firstChild;
             cardTitleInput.select();
